@@ -1,0 +1,254 @@
+@use '../abstracts' as *;
+
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	color: $color-black;
+	background: $color-white;
+	border-bottom: 1px solid $color-border;
+	transition:
+		background-color $duration $ease,
+		color $duration $ease,
+		border-color $duration $ease;
+
+	// Peste hero (prima pagină, înainte de scroll/hover)
+	&.is-transparent {
+		color: $color-white;
+		background: transparent;
+		border-bottom-color: transparent;
+	}
+
+	// Bara de admin WordPress (utilizator logat)
+	.admin-bar & {
+		top: 32px;
+
+		@media (max-width: 782px) {
+			top: 46px;
+		}
+
+		@media (max-width: 600px) {
+			top: 0;
+		}
+	}
+
+	&__bar {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: center;
+		height: $header-height;
+		padding-inline: 12px;
+
+		@include mq(lg) {
+			padding-inline: 40px 28px;
+		}
+	}
+
+	&__start,
+	&__end {
+		display: flex;
+		align-items: center;
+		height: 100%;
+	}
+
+	&__end {
+		justify-content: flex-end;
+		gap: 4px;
+
+		@include mq(lg) {
+			gap: 20px;
+		}
+	}
+
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+
+		@include mq(lg) {
+			width: 24px;
+		}
+	}
+
+	&__burger {
+		@include mq(lg) {
+			display: none;
+		}
+	}
+
+	&__account {
+		display: none;
+
+		@include mq(lg) {
+			display: inline-flex;
+		}
+	}
+}
+
+/* Navigație desktop
+   ---------------------------------------------------------------- */
+
+.site-nav {
+	display: none;
+	height: 100%;
+
+	@include mq(lg) {
+		display: block;
+	}
+
+	&__list {
+		display: flex;
+		gap: 32px;
+		height: 100%;
+	}
+
+	// Rămâne `static` ca mega meniul să se poziționeze față de tot header-ul
+	&__item {
+		display: flex;
+		height: 100%;
+	}
+
+	&__link {
+		position: relative;
+		display: flex;
+		align-items: center;
+		height: 100%;
+		font-size: $fs-xs;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+
+		&::after {
+			content: '';
+			position: absolute;
+			right: 0;
+			bottom: -1px;
+			left: 0;
+			height: 2px;
+			background: currentColor;
+			transform: scaleX(0);
+			transition: transform $duration $ease;
+		}
+
+		&.is-active::after {
+			transform: scaleX(1);
+		}
+
+		@include hover {
+			&::after {
+				transform: scaleX(1);
+			}
+		}
+	}
+}
+
+/* Logo
+   ---------------------------------------------------------------- */
+
+.site-logo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&__text {
+		font-family: $font-logo;
+		font-size: 20px;
+		font-weight: 900;
+		font-stretch: normal;
+		line-height: 1;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+
+		@include mq(lg) {
+			font-size: 23px;
+		}
+	}
+
+	&__img {
+		width: auto;
+		max-height: 26px;
+	}
+
+	// Logo monocrom negru -> alb peste hero
+	.is-transparent &__img {
+		filter: brightness(0) invert(1);
+	}
+}
+
+/* Căutare + membership
+   ---------------------------------------------------------------- */
+
+.header-search {
+	position: relative;
+	display: none;
+	align-items: center;
+	width: 268px;
+	height: 40px;
+	border: 1px solid #d4d4d4;
+	transition: border-color $duration $ease;
+
+	@include mq(lg) {
+		display: flex;
+	}
+
+	.is-transparent & {
+		border-color: rgba($color-white, 0.6);
+	}
+
+	&:focus-within {
+		border-color: currentColor;
+	}
+
+	&__input {
+		flex: 1;
+		min-width: 0;
+		height: 100%;
+		padding: 0 40px 0 12px;
+		font-size: $fs-xs;
+		color: inherit;
+		background: transparent;
+		border: 0;
+		outline: none;
+		appearance: none;
+
+		&::placeholder {
+			color: inherit;
+			opacity: 0.85;
+		}
+
+		&::-webkit-search-cancel-button {
+			appearance: none;
+		}
+	}
+
+	&__submit {
+		position: absolute;
+		right: 10px;
+		display: inline-flex;
+	}
+}
+
+.header-membership {
+	display: none;
+	align-items: center;
+	height: 40px;
+	padding: 0 22px;
+	font-size: $fs-xs;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	border: 1px solid currentColor;
+	transition:
+		background-color $duration $ease,
+		color $duration $ease;
+
+	@include mq(lg) {
+		display: inline-flex;
+	}
+
+	@include hover {
+		color: $color-white;
+		background: $color-black;
+		border-color: $color-black;
+	}
+}

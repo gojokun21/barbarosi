@@ -1,0 +1,24 @@
+{% set messages = header.announcements|default([]) %}
+{% if messages|length %}
+	<div class="announcement-bar" x-data="announcement({{ messages|length }})">
+		<div class="announcement-bar__messages">
+			{% for message in messages %}
+				<p
+					class="announcement-bar__message{{ loop.first ? ' is-active' }}"
+					:class="{ 'is-active': current === {{ loop.index0 }} }"
+					{% if not loop.first %}aria-hidden="true"{% endif %}
+					:aria-hidden="(current !== {{ loop.index0 }}).toString()"
+				>{{ message|e }}</p>
+			{% endfor %}
+		</div>
+
+		{# TODO: selector regiune / limbă (ex. WPML sau Polylang) #}
+		<div class="announcement-bar__meta">
+			<span class="announcement-bar__meta-item">{{ header.region|e }}</span>
+			<span class="announcement-bar__meta-item">
+				<span class="flag flag--ro" aria-hidden="true"></span>
+				{{ header.language|e }}
+			</span>
+		</div>
+	</div>
+{% endif %}

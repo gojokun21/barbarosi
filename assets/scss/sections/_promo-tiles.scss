@@ -1,0 +1,61 @@
+@use '../abstracts' as *;
+
+.promo-tiles {
+	display: grid;
+	gap: 8px;
+	padding: 0 8px 64px;
+	background: $color-surface;
+
+	@include mq(md) {
+		grid-template-columns: repeat(3, 1fr);
+		padding: 0 28px 80px;
+	}
+}
+
+.promo-tile {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 4 / 3;
+	overflow: hidden;
+	isolation: isolate;
+	text-align: center;
+	color: $color-white;
+	background: #1a1a1a;
+
+	@include mq(md) {
+		aspect-ratio: 1;
+	}
+
+	&__img {
+		@include cover-media;
+		z-index: -1;
+		transition: transform 0.8s $ease;
+	}
+
+	@include hover {
+		.promo-tile__img {
+			transform: scale(1.04);
+		}
+	}
+
+	&__content {
+		display: flex;
+		flex-direction: column;
+		padding-inline: 16px;
+	}
+
+	&__title {
+		font-size: $fs-lg;
+		font-weight: 700;
+		line-height: 1.1;
+		text-transform: uppercase;
+	}
+
+	&__subtitle {
+		font-size: $fs-sm;
+		line-height: 1.5;
+		text-transform: uppercase;
+	}
+}

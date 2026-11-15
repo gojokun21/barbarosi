@@ -1,0 +1,71 @@
+{# Meniu mobil (sub breakpoint-ul lg). Starea `drawerOpen` vine din componenta siteHeader. #}
+{# Containerul nu are x-show: așa animațiile de ieșire ale copiilor rămân vizibile. #}
+<div class="mobile-drawer" id="mobile-drawer">
+	<div
+		class="mobile-drawer__backdrop"
+		x-cloak
+		x-show="drawerOpen"
+		x-transition.opacity
+		@click="drawerOpen = false"
+	></div>
+
+	<div
+		class="mobile-drawer__panel"
+		role="dialog"
+		aria-modal="true"
+		aria-label="{{ __('Meniu', 'barbarosi') }}"
+		x-cloak
+		x-show="drawerOpen"
+		x-transition:enter="mobile-drawer__panel--enter"
+		x-transition:enter-start="mobile-drawer__panel--from"
+		x-transition:leave="mobile-drawer__panel--leave"
+		x-transition:leave-end="mobile-drawer__panel--from"
+	>
+		<div class="mobile-drawer__head">
+			<button type="button" class="site-header__icon" x-ref="drawerClose" @click="drawerOpen = false" aria-label="{{ __('Închide meniul', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'close' } only %}
+			</button>
+		</div>
+
+		<form class="header-search mobile-drawer__search" role="search" method="get" action="{{ function('home_url', '/')|esc_url }}">
+			<label class="screen-reader-text" for="drawer-search-input">{{ __('Caută', 'barbarosi') }}</label>
+			<input class="header-search__input" id="drawer-search-input" type="search" name="s" placeholder="{{ __('Caută...', 'barbarosi') }}" autocomplete="off">
+			<button class="header-search__submit" type="submit" aria-label="{{ __('Caută', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'search' } only %}
+			</button>
+		</form>
+
+		<ul class="mobile-drawer__nav" role="list">
+			{% for item in header.nav %}
+				<li class="mobile-drawer__item" {% if item.mega is defined %}x-data="{ expanded: false }"{% endif %}>
+					{% if item.mega is defined %}
+						<button type="button" class="mobile-drawer__toggle" @click="expanded = !expanded" :aria-expanded="expanded.toString()" aria-expanded="false">
+							{{ item.title|e }}
+							{% include 'partial/icon.twig' with { name: 'chevron' } only %}
+						</button>
+						<div class="mobile-drawer__sub" x-show="expanded" x-cloak>
+							{% for column in item.mega.columns %}
+								<p class="mobile-drawer__group-title">{{ column.title|e }}</p>
+								<ul class="mobile-drawer__links" role="list">
+									{% for link in column.links %}
+										<li><a href="{{ link.url|esc_url }}">{{ link.title|e }}</a></li>
+									{% endfor %}
+								</ul>
+							{% endfor %}
+						</div>
+					{% else %}
+						<a class="mobile-drawer__toggle" href="{{ item.url|esc_url }}">{{ item.title|e }}</a>
+					{% endif %}
+				</li>
+			{% endfor %}
+		</ul>
+
+		<ul class="mobile-drawer__secondary" role="list">
+			<li><a href="{{ header.membership.url|esc_url }}">{{ header.membership.title|e }}</a></li>
+			<li><a href="{{ header.account_url|esc_url }}">{{ __('Contul meu', 'barbarosi') }}</a></li>
+			{% for link in header.nav_secondary %}
+				<li><a href="{{ link.url|esc_url }}">{{ link.title|e }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>

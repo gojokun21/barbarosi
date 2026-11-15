@@ -1,0 +1,90 @@
+{#
+	Header: stânga navigație (mega meniu), centru logo, dreapta căutare / membership / cont / coș.
+	Pe prima pagină e transparent peste hero și devine alb la scroll, hover sau meniu deschis.
+#}
+{% set home_url = function('home_url', '/') %}
+
+<header
+	class="site-header{{ header_transparent ? ' is-transparent' }}"
+	x-data="siteHeader({ transparent: {{ header_transparent ? 'true' : 'false' }} })"
+	:class="{ 'is-transparent': !solid }"
+	@mouseenter="hovered = true"
+	@mouseleave="hovered = false; scheduleClose()"
+	@keydown.escape.window="closeAll()"
+>
+	<div class="site-header__bar">
+		<div class="site-header__start">
+			<button
+				type="button"
+				class="site-header__icon site-header__burger"
+				@click="toggleDrawer()"
+				aria-controls="mobile-drawer"
+				:aria-expanded="drawerOpen.toString()"
+				aria-expanded="false"
+				aria-label="{{ __('Deschide meniul', 'barbarosi') }}"
+			>
+				{% include 'partial/icon.twig' with { name: 'menu' } only %}
+			</button>
+
+			<nav class="site-nav" aria-label="{{ __('Meniu principal', 'barbarosi') }}">
+				<ul class="site-nav__list" role="list">
+					{% for item in header.nav %}
+						<li
+							class="site-nav__item"
+							{% if item.mega is defined %}
+								@mouseenter="openMenu('{{ item.key }}')"
+								@focusin="openMenu('{{ item.key }}')"
+								@focusout="if (!$el.contains($event.relatedTarget)) scheduleClose()"
+							{% else %}
+								@mouseenter="scheduleClose()"
+							{% endif %}
+						>
+							<a
+								class="site-nav__link"
+								href="{{ item.url|esc_url }}"
+								{% if item.mega is defined %}
+									:class="{ 'is-active': activeMenu === '{{ item.key }}' }"
+									aria-haspopup="true"
+									:aria-expanded="(activeMenu === '{{ item.key }}').toString()"
+								{% endif %}
+							>{{ item.title|e }}</a>
+
+							{% if item.mega is defined %}
+								{% include 'partial/mega-menu.twig' with { item: item, secondary: header.nav_secondary } only %}
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			</nav>
+		</div>
+
+		<a class="site-logo" href="{{ home_url|esc_url }}" rel="home">
+			{% if logo %}
+				<img class="site-logo__img" src="{{ logo.src|esc_url }}" alt="{{ site.name|esc_attr }}" width="{{ logo.width }}" height="{{ logo.height }}">
+			{% else %}
+				<span class="site-logo__text">{{ site.name|e }}</span>
+			{% endif %}
+		</a>
+
+		<div class="site-header__end">
+			<form class="header-search" role="search" method="get" action="{{ home_url|esc_url }}">
+				<label class="screen-reader-text" for="header-search-input">{{ __('Caută', 'barbarosi') }}</label>
+				<input class="header-search__input" id="header-search-input" type="search" name="s" placeholder="{{ __('Caută...', 'barbarosi') }}" autocomplete="off">
+				<button class="header-search__submit" type="submit" aria-label="{{ __('Caută', 'barbarosi') }}">
+					{% include 'partial/icon.twig' with { name: 'search' } only %}
+				</button>
+			</form>
+
+			<a class="header-membership" href="{{ header.membership.url|esc_url }}">{{ header.membership.title|e }}</a>
+
+			<a class="site-header__icon site-header__account" href="{{ header.account_url|esc_url }}" aria-label="{{ __('Contul meu', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'user' } only %}
+			</a>
+			<a class="site-header__icon" href="{{ header.cart_url|esc_url }}" aria-label="{{ __('Coșul de cumpărături', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'bag' } only %}
+			</a>
+		</div>
+	</div>
+
+	{% include 'partial/mobile-drawer.twig' %}
+</header>

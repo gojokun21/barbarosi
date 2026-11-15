@@ -1,0 +1,132 @@
+@use '../abstracts' as *;
+
+.mega-menu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	left: 0;
+	display: none;
+	color: $color-black;
+	background: $color-white;
+	border-top: 1px solid $color-border;
+
+	@include mq(lg) {
+		display: grid;
+		grid-template-columns: 1fr 21.5vw 21.5vw;
+	}
+
+	// Clase folosite de x-transition
+	&--enter {
+		transition: opacity 0.2s $ease;
+	}
+
+	&--enter-start {
+		opacity: 0;
+	}
+
+	&--enter-end {
+		opacity: 1;
+	}
+
+	&__main {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	&__columns {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 32px 0;
+		padding: 30px 50px;
+	}
+
+	&__column {
+		width: 200px;
+	}
+
+	&__title {
+		margin-bottom: 20px;
+		font-size: $fs-xs;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	&__links {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	&__link {
+		font-size: $fs-xs;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+
+		@include hover {
+			text-decoration: underline;
+			text-underline-offset: 3px;
+		}
+	}
+
+	&__secondary {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px 32px;
+		padding: 20px 50px;
+		border-top: 1px solid $color-border;
+	}
+}
+
+.mega-promo {
+	position: relative;
+	display: block;
+	aspect-ratio: 0.7;
+	overflow: hidden;
+	isolation: isolate;
+	color: $color-white;
+
+	&__img {
+		@include cover-media;
+		z-index: -1;
+		transition: transform 0.6s $ease;
+	}
+
+	@include hover {
+		.mega-promo__img {
+			transform: scale(1.03);
+		}
+	}
+
+	&__content {
+		position: absolute;
+		right: 24px;
+		bottom: 24px;
+		left: 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	&__title {
+		font-size: 24px;
+		font-weight: 700;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+
+	&__subtitle {
+		margin-top: 6px;
+		font-size: $fs-sm;
+		text-transform: uppercase;
+	}
+
+	&__cta {
+		margin-top: 22px;
+		padding: 13px 44px;
+		font-size: $fs-xs;
+		text-transform: uppercase;
+		color: $color-black;
+		background: $color-white;
+	}
+}

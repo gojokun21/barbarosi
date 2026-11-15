@@ -1,0 +1,46 @@
+{#
+	„Shop the look”: 3 imagini lookbook; butonul „+” deschide panoul cu produsele din ținută.
+	Parametri: looks { title, items[] { image, products[] } }
+#}
+<section class="looks" aria-labelledby="looks-title">
+	<h2 class="looks__title" id="looks-title">{{ looks.title|e }}</h2>
+
+	<div class="looks__grid">
+		{% for look in looks.items %}
+			{% set panel_id = 'look-panel-' ~ loop.index %}
+			<div class="look" x-data="{ open: false }" @keydown.escape="open = false" @click.outside="open = false">
+				{% include 'partial/image.twig' with { image: look.image, class: 'look__img', sizes: '(min-width: 768px) 33vw, 85vw' } only %}
+
+				<div
+					class="look__panel"
+					id="{{ panel_id }}"
+					x-cloak
+					x-show="open"
+					x-transition.opacity.duration.200ms
+				>
+					<ul class="look__products" role="list">
+						{% for product in look.products %}
+							<li>
+								{% include 'partial/product-card.twig' with { product: product, sizes: '240px', compact: true } only %}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+				<button
+					type="button"
+					class="look__toggle"
+					@click="open = !open"
+					:aria-expanded="open.toString()"
+					aria-expanded="false"
+					aria-controls="{{ panel_id }}"
+					:aria-label="open ? '{{ __('Închide produsele din ținută', 'barbarosi') }}' : '{{ __('Vezi produsele din ținută', 'barbarosi') }}'"
+					aria-label="{{ __('Vezi produsele din ținută', 'barbarosi') }}"
+				>
+					<span x-show="!open">{% include 'partial/icon.twig' with { name: 'plus' } only %}</span>
+					<span x-show="open" x-cloak>{% include 'partial/icon.twig' with { name: 'close' } only %}</span>
+				</button>
+			</div>
+		{% endfor %}
+	</div>
+</section>

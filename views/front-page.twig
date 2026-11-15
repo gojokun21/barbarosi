@@ -1,0 +1,19 @@
+{% extends 'base.twig' %}
+
+{% block main %}
+	{% include 'sections/hero.twig' with { hero: home.hero, heading: 'h1', under_header: true, priority: true } only %}
+
+	{% include 'sections/product-row.twig' with { section: home.new_arrivals } only %}
+
+	{% include 'sections/split-banners.twig' with { banners: home.split_banners } only %}
+
+	{% include 'sections/hero.twig' with { hero: home.collection } only %}
+
+	{% include 'sections/shop-the-look.twig' with { looks: home.looks } only %}
+
+	{% include 'sections/category-carousel.twig' with { category: home.category } only %}
+
+	{% include 'sections/newsletter.twig' with { newsletter: home.newsletter } only %}
+
+	{% include 'sections/promo-tiles.twig' with { tiles: home.tiles } only %}
+{% endblock %}

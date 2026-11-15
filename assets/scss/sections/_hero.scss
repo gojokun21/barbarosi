@@ -1,0 +1,63 @@
+@use '../abstracts' as *;
+
+// Banner full-screen (folosit pentru hero și pentru banner-ul de colecție).
+// Media e pe z-index -1 într-un context izolat, ca textul să rămână nepozitionat
+// și link-ul „stretched” să acopere toată secțiunea.
+.hero {
+	position: relative;
+	display: grid;
+	grid-template-rows: 1fr auto 1fr;
+	justify-items: center;
+	height: 100vh;
+	height: 100svh;
+	min-height: 520px;
+	overflow: hidden;
+	isolation: isolate;
+	text-align: center;
+	color: $color-white;
+	background: #1a1a1a;
+
+	// Urcă sub header-ul transparent; scădem bara de anunțuri ca tot banner-ul (cu CTA) să fie în primul ecran
+	&--under-header {
+		height: calc(100vh - #{$announcement-height});
+		height: calc(100svh - #{$announcement-height});
+		margin-top: -$header-height;
+	}
+
+	&__media {
+		@include cover-media;
+		z-index: -1;
+	}
+
+	&__content {
+		grid-row: 2;
+		padding-inline: $page-gutter;
+	}
+
+	&__title {
+		@include stacked-title(28px);
+
+		@include mq(md) {
+			font-size: $fs-xl;
+		}
+	}
+
+	&__cta {
+		grid-row: 3;
+		align-self: end;
+		margin-bottom: 48px;
+		font-size: 16px;
+		letter-spacing: 0.01em;
+		text-transform: uppercase;
+		white-space: nowrap;
+
+		@include mq(md) {
+			font-size: $fs-md;
+		}
+
+		@include hover {
+			text-decoration: underline;
+			text-underline-offset: 4px;
+		}
+	}
+}

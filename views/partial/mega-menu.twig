@@ -1,0 +1,47 @@
+{#
+	Mega meniu desktop: coloane de link-uri + bară secundară în stânga, 2 promo-uri cu imagine în dreapta.
+	Parametri: item (din header.nav, cu cheia `mega`), secondary (link-uri pentru bara de jos)
+#}
+<div
+	class="mega-menu"
+	x-cloak
+	x-show="activeMenu === '{{ item.key }}'"
+	x-transition:enter="mega-menu--enter"
+	x-transition:enter-start="mega-menu--enter-start"
+	x-transition:enter-end="mega-menu--enter-end"
+	@mouseenter="openMenu('{{ item.key }}')"
+>
+	<div class="mega-menu__main">
+		<div class="mega-menu__columns">
+			{% for column in item.mega.columns %}
+				<div class="mega-menu__column">
+					<p class="mega-menu__title">{{ column.title|e }}</p>
+					<ul class="mega-menu__links" role="list">
+						{% for link in column.links %}
+							<li><a class="mega-menu__link" href="{{ link.url|esc_url }}">{{ link.title|e }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endfor %}
+		</div>
+
+		{% if secondary|length %}
+			<ul class="mega-menu__secondary" role="list">
+				{% for link in secondary %}
+					<li><a class="mega-menu__link" href="{{ link.url|esc_url }}">{{ link.title|e }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+
+	{% for promo in item.mega.promos %}
+		<a class="mega-promo" href="{{ promo.url|esc_url }}">
+			{% include 'partial/image.twig' with { image: promo.image, class: 'mega-promo__img', sizes: '22vw' } only %}
+			<span class="mega-promo__content">
+				<span class="mega-promo__title">{{ promo.title|e }}</span>
+				<span class="mega-promo__subtitle">{{ promo.subtitle|e }}</span>
+				<span class="mega-promo__cta">{{ promo.cta|e }}</span>
+			</span>
+		</a>
+	{% endfor %}
+</div>

@@ -1,0 +1,53 @@
+@use '../abstracts' as *;
+
+.split-banners {
+	display: grid;
+
+	@include mq(md) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+.split-banner {
+	position: relative;
+	display: flex;
+	align-items: center;
+	aspect-ratio: 1;
+	padding-inline: $page-gutter;
+	overflow: hidden;
+	isolation: isolate;
+	color: $color-white;
+	background: #1a1a1a;
+
+	&__img {
+		@include cover-media;
+		z-index: -1;
+		transition: transform 0.8s $ease;
+	}
+
+	@include hover {
+		.split-banner__img {
+			transform: scale(1.02);
+		}
+	}
+
+	&__title {
+		@include stacked-title($fs-lg, 1.5);
+		letter-spacing: 0;
+	}
+
+	&__cta {
+		display: inline-block;
+		margin-top: 12px;
+		font-size: $fs-md;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	@include hover {
+		.split-banner__cta {
+			text-decoration: underline;
+			text-underline-offset: 4px;
+		}
+	}
+}

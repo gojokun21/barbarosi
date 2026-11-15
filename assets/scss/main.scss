@@ -1,0 +1,5 @@
+// Entry point SCSS — compilat de Vite în dist/
+// Adaugă partial-uri noi în folderul corespunzător și în _index.scss-ul lui.
+@use 'base';
+@use 'components';
+@use 'sections';

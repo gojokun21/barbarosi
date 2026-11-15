@@ -1,0 +1,22 @@
+{#
+	Iconițe SVG inline (moștenesc culoarea prin currentColor).
+	Folosire: {% include 'partial/icon.twig' with { name: 'search' } only %}
+#}
+{% set icon_class = 'icon icon--' ~ name ~ (class is defined ? ' ' ~ class : '') %}
+{% if name == 'search' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.75"/><path d="m15.5 15.5 5.25 5.25"/></svg>
+{% elseif name == 'user' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4.25"/><path d="M4 21c.6-4.2 3.9-6.75 8-6.75S19.4 16.8 20 21"/></svg>
+{% elseif name == 'bag' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M4.75 7.75h14.5v13.5H4.75z"/><path d="M8.5 7.75V6.5a3.5 3.5 0 0 1 7 0v1.25"/></svg>
+{% elseif name == 'menu' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M3 6.5h18M3 12h18M3 17.5h18"/></svg>
+{% elseif name == 'close' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="m5 5 14 14M19 5 5 19"/></svg>
+{% elseif name == 'plus' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M12 4v16M4 12h16"/></svg>
+{% elseif name == 'pin' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M12 21s-6.75-6.2-6.75-11.25a6.75 6.75 0 0 1 13.5 0C18.75 14.8 12 21 12 21z"/><circle cx="12" cy="9.75" r="2.25"/></svg>
+{% elseif name == 'chevron' %}
+	<svg class="{{ icon_class }}" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+{% endif %}

@@ -1,0 +1,41 @@
+{#
+	Banner full-screen cu video sau imagine, titlu centrat și CTA jos. Tot banner-ul e clickabil.
+	Parametri:
+	  hero         { video?, poster?, image?, title_strong, title_light, cta, url }
+	  heading      tag-ul titlului (h1 pe primul banner, h2 în rest)
+	  under_header true = urcă sub header-ul transparent
+	  priority     true = imaginea e LCP (eager + fetchpriority high)
+#}
+{% set heading = heading|default('h2') %}
+{% set priority = priority|default(false) %}
+<section class="hero{{ under_header|default(false) ? ' hero--under-header' }}">
+	{% if hero.video is defined and hero.video %}
+		<video
+			class="hero__media"
+			src="{{ hero.video|esc_url }}"
+			poster="{{ hero.poster|esc_url }}"
+			autoplay muted loop playsinline
+			preload="auto"
+			aria-hidden="true"
+			x-data
+			x-init="if (matchMedia('(prefers-reduced-motion: reduce)').matches) $el.pause()"
+		></video>
+	{% elseif hero.image is defined %}
+		{% include 'partial/image.twig' with {
+			image: hero.image,
+			class: 'hero__media',
+			sizes: '100vw',
+			loading: priority ? 'eager' : 'lazy',
+			fetchpriority: priority ? 'high' : 'auto',
+		} only %}
+	{% endif %}
+
+	<div class="hero__content">
+		<{{ heading }} class="hero__title">
+			<span class="hero__title-strong">{{ hero.title_strong|e }}</span>
+			<span class="hero__title-light">{{ hero.title_light|e }}</span>
+		</{{ heading }}>
+	</div>
+
+	<a class="hero__cta stretched-link" href="{{ hero.url|esc_url }}">{{ hero.cta|e }}</a>
+</section>

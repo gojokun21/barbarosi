@@ -1,0 +1,56 @@
+@use '../abstracts' as *;
+
+// Checkbox custom: input-ul nativ rămâne (invizibil) peste cutie, ca validarea `required` să funcționeze.
+.checkbox {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	font-size: $fs-sm;
+	line-height: 1.2;
+	text-transform: uppercase;
+	cursor: pointer;
+
+	&__input {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 18px;
+		height: 18px;
+		margin: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+
+	&__box {
+		display: grid;
+		flex: 0 0 auto;
+		place-items: center;
+		width: 18px;
+		height: 18px;
+		border: 1px solid $color-black;
+
+		&::after {
+			content: '';
+			width: 10px;
+			height: 10px;
+			background: $color-black;
+			transform: scale(0);
+			transition: transform 0.15s $ease;
+		}
+	}
+
+	a {
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+}
+
+.checkbox__input:checked + .checkbox__box::after {
+	transform: scale(1);
+}
+
+.checkbox__input:focus-visible + .checkbox__box {
+	outline: 2px solid $color-black;
+	outline-offset: 2px;
+}

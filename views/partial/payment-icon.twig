@@ -1,0 +1,12 @@
+{# Logo-uri simplificate pentru metodele de plată (36×24). #}
+{% if name == 'visa' %}
+	<svg viewBox="0 0 36 24" width="36" height="24" role="img" aria-label="Visa"><rect width="36" height="24" rx="3" fill="#1434cb"/><text x="18" y="16" fill="#fff" font-family="Arial, sans-serif" font-size="10" font-style="italic" font-weight="700" text-anchor="middle">VISA</text></svg>
+{% elseif name == 'mastercard' %}
+	<svg viewBox="0 0 36 24" width="36" height="24" role="img" aria-label="Mastercard"><rect width="36" height="24" rx="3" fill="#252525"/><circle cx="14.5" cy="12" r="6.5" fill="#eb001b"/><circle cx="21.5" cy="12" r="6.5" fill="#f79e1b"/><path d="M18 6.5a6.5 6.5 0 0 1 0 11 6.5 6.5 0 0 1 0-11z" fill="#ff5f00"/></svg>
+{% elseif name == 'maestro' %}
+	<svg viewBox="0 0 36 24" width="36" height="24" role="img" aria-label="Maestro"><rect width="36" height="24" rx="3" fill="#fff"/><circle cx="14.5" cy="12" r="6.5" fill="#0099df"/><circle cx="21.5" cy="12" r="6.5" fill="#eb001b"/><path d="M18 6.5a6.5 6.5 0 0 1 0 11 6.5 6.5 0 0 1 0-11z" fill="#6c6bbd"/></svg>
+{% elseif name == 'applepay' %}
+	<svg viewBox="0 0 36 24" width="36" height="24" role="img" aria-label="Apple Pay"><rect width="36" height="24" rx="3" fill="#fff"/><text x="18" y="14.5" fill="#000" font-family="Arial, sans-serif" font-size="6" font-weight="700" text-anchor="middle">Apple Pay</text></svg>
+{% elseif name == 'googlepay' %}
+	<svg viewBox="0 0 36 24" width="36" height="24" role="img" aria-label="Google Pay"><rect width="36" height="24" rx="3" fill="#fff"/><text x="18" y="15.5" fill="#3c4043" font-family="Arial, sans-serif" font-size="6" font-weight="700" text-anchor="middle">Google Pay</text></svg>
+{% endif %}

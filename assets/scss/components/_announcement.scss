@@ -1,0 +1,56 @@
+@use '../abstracts' as *;
+
+.announcement-bar {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: $announcement-height;
+	padding-inline: $page-gutter;
+	font-size: $fs-xs;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	color: $color-white;
+	background: $color-black;
+
+	&__messages {
+		display: grid;
+		place-items: center;
+		width: 100%;
+		min-width: 0;
+	}
+
+	&__message {
+		grid-area: 1 / 1;
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		opacity: 0;
+		transition: opacity 0.5s $ease;
+
+		&.is-active {
+			opacity: 1;
+		}
+	}
+
+	&__meta {
+		display: none;
+
+		@include mq(lg) {
+			position: absolute;
+			top: 0;
+			right: 44px;
+			bottom: 0;
+			display: flex;
+			align-items: center;
+			gap: 24px;
+		}
+	}
+
+	&__meta-item {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+	}
+}

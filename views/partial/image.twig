@@ -1,0 +1,22 @@
+{#
+	Imagine responsive.
+	Parametri:
+	  image          { src, srcset?, alt? }  (vezi DemoContent::image)
+	  sizes          atributul sizes (implicit 100vw)
+	  class          clase CSS
+	  loading        'lazy' (implicit) | 'eager'
+	  fetchpriority  'high' pentru imaginea LCP
+	  alt            suprascrie image.alt (ex. '' pentru imagini decorative)
+	Folosire: {% include 'partial/image.twig' with { image: x, sizes: '50vw' } only %}
+#}
+{% if image and image.src %}
+	<img
+		{% if class is defined and class %}class="{{ class }}"{% endif %}
+		src="{{ image.src|esc_url }}"
+		{% if image.srcset is defined and image.srcset %}srcset="{{ image.srcset|esc_attr }}" sizes="{{ sizes|default('100vw') }}"{% endif %}
+		alt="{{ (alt is defined ? alt : image.alt|default(''))|esc_attr }}"
+		loading="{{ loading|default('lazy') }}"
+		decoding="async"
+		{% if fetchpriority is defined %}fetchpriority="{{ fetchpriority }}"{% endif %}
+	>
+{% endif %}

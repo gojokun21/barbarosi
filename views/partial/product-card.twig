@@ -1,0 +1,41 @@
+{#
+	Card de produs.
+	Parametri:
+	  product  { title, price, url, badge?, image, hover_image?, colors? }
+	  sizes    atributul sizes pentru imagini
+	  compact  true = varianta mică din „Shop the look” (fără badge și hover)
+#}
+{% set compact = compact|default(false) %}
+<article class="product-card{{ compact ? ' product-card--compact' }}">
+	<a class="product-card__media" href="{{ product.url|esc_url }}" tabindex="-1" aria-hidden="true">
+		{% include 'partial/image.twig' with { image: product.image, class: 'product-card__img', sizes: sizes, alt: '' } only %}
+		{% if product.hover_image and not compact %}
+			{% include 'partial/image.twig' with { image: product.hover_image, class: 'product-card__img product-card__img--hover', sizes: sizes, alt: '' } only %}
+		{% endif %}
+		{% if product.badge and not compact %}
+			<span class="product-card__badge">{{ product.badge|e }}</span>
+		{% endif %}
+	</a>
+
+	<div class="product-card__info">
+		<div class="product-card__text">
+			<h3 class="product-card__title"><a href="{{ product.url|esc_url }}">{{ product.title|e }}</a></h3>
+			<p class="product-card__price">{{ product.price|e }}</p>
+		</div>
+
+		{% if product.colors|length > 1 %}
+			<ul class="product-card__swatches" role="list" aria-label="{{ __('Culori disponibile', 'barbarosi') }}">
+				{% for color in product.colors %}
+					<li>
+						<a
+							class="swatch{{ loop.first ? ' is-current' }}"
+							href="{{ product.url|esc_url }}"
+							style="--swatch: {{ color.hex|esc_attr }}"
+							title="{{ color.name|esc_attr }}"
+						><span class="screen-reader-text">{{ color.name|e }}</span></a>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+</article>

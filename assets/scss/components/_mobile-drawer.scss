@@ -1,0 +1,126 @@
+@use '../abstracts' as *;
+
+// Containerul acoperă ecranul dar nu blochează click-urile; doar copiii vizibili le primesc.
+.mobile-drawer {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	color: $color-black;
+	pointer-events: none;
+
+	@include mq(lg) {
+		display: none;
+	}
+
+	// Bara de admin WordPress (utilizator logat) stă deasupra
+	.admin-bar & {
+		top: 46px;
+
+		@media (min-width: 783px) {
+			top: 32px;
+		}
+	}
+
+	&__backdrop,
+	&__panel {
+		pointer-events: auto;
+	}
+
+	&__backdrop {
+		position: absolute;
+		inset: 0;
+		background: rgba($color-black, 0.4);
+	}
+
+	&__panel {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		flex-direction: column;
+		width: min(380px, 88vw);
+		padding: 0 20px 32px;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		background: $color-white;
+
+		// Clase folosite de x-transition
+		&--enter,
+		&--leave {
+			transition: transform 0.3s $ease;
+		}
+
+		&--from {
+			transform: translateX(-100%);
+		}
+	}
+
+	&__head {
+		display: flex;
+		align-items: center;
+		height: $header-height;
+		margin-inline: -8px;
+	}
+
+	&__search {
+		display: flex;
+		width: 100%;
+		margin-bottom: 16px;
+	}
+
+	&__nav {
+		border-top: 1px solid $color-border;
+	}
+
+	&__item {
+		border-bottom: 1px solid $color-border;
+	}
+
+	&__toggle {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 16px 0;
+		font-size: 13px;
+		font-weight: 700;
+		text-align: left;
+		text-transform: uppercase;
+
+		.icon {
+			transition: transform $duration $ease;
+		}
+
+		&[aria-expanded='true'] .icon {
+			transform: rotate(180deg);
+		}
+	}
+
+	&__sub {
+		padding-bottom: 16px;
+	}
+
+	&__group-title {
+		margin: 14px 0 10px;
+		font-size: 11px;
+		font-weight: 700;
+		text-transform: uppercase;
+		color: $color-muted-dark;
+	}
+
+	&__links {
+		display: grid;
+		gap: 12px;
+		font-size: 12px;
+		text-transform: uppercase;
+	}
+
+	&__secondary {
+		display: grid;
+		gap: 14px;
+		margin-top: 28px;
+		font-size: 11px;
+		text-transform: uppercase;
+	}
+}

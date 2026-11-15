@@ -1,0 +1,39 @@
+{% block html_head_container %}
+
+{% include 'html-header.twig' %}
+	{% block head %}
+	{% endblock %}
+	</head>
+{% endblock %}
+
+	<body class="{{ body_class }}" data-template="base.twig">
+		{{ function('wp_body_open') }}
+		<a class="skip-link screen-reader-text" href="#content">{{ __('Sari la conținut', 'barbarosi') }}</a>
+
+		{% block header %}
+			{% include 'partial/announcement-bar.twig' %}
+			{% include 'partial/site-header.twig' %}
+		{% endblock %}
+
+		<main id="content" class="site-main">
+			{% block main %}
+				<div class="wrapper page-content">
+					{% if title %}<h1 class="page-title">{{ title }}</h1>{% endif %}
+					{% block content %}
+						Sorry, no content
+					{% endblock %}
+				</div>
+				{% if sidebar %}
+					<aside class="layout-sidebar">
+						{{ sidebar }}
+					</aside>
+				{% endif %}
+			{% endblock %}
+		</main>
+
+		{% block footer %}
+			{% include 'footer.twig' %}
+			{{ function('wp_footer') }}
+		{% endblock %}
+	</body>
+</html>

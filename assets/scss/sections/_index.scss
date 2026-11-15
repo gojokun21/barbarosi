@@ -1,0 +1,8 @@
+// Secțiunile primei pagini (views/sections/*.twig)
+@forward 'hero';
+@forward 'product-row';
+@forward 'split-banners';
+@forward 'shop-the-look';
+@forward 'category-carousel';
+@forward 'newsletter';
+@forward 'promo-tiles';

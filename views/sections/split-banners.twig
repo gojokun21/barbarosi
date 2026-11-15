@@ -1,0 +1,15 @@
+{# Două bannere pătrate alăturate. Parametri: banners[] { image, title_strong, title_light, cta, url } #}
+<section class="split-banners">
+	{% for banner in banners %}
+		<article class="split-banner">
+			{% include 'partial/image.twig' with { image: banner.image, class: 'split-banner__img', sizes: '(min-width: 768px) 50vw, 100vw' } only %}
+			<div class="split-banner__content">
+				<h2 class="split-banner__title">
+					<span class="split-banner__title-strong">{{ banner.title_strong|e }}</span>
+					<span class="split-banner__title-light">{{ banner.title_light|e }}</span>
+				</h2>
+				<a class="split-banner__cta stretched-link" href="{{ banner.url|esc_url }}">{{ banner.cta|e }}</a>
+			</div>
+		</article>
+	{% endfor %}
+</section>

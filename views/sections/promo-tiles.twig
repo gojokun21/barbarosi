@@ -1,0 +1,12 @@
+{# Trei plăci pătrate cu text centrat. Parametri: tiles[] { image, title_strong, title_light, url } #}
+<section class="promo-tiles">
+	{% for tile in tiles %}
+		<a class="promo-tile" href="{{ tile.url|esc_url }}">
+			{% include 'partial/image.twig' with { image: tile.image, class: 'promo-tile__img', sizes: '(min-width: 768px) 33vw, 100vw', alt: '' } only %}
+			<span class="promo-tile__content">
+				<span class="promo-tile__title">{{ tile.title_strong|e }}</span>
+				<span class="promo-tile__subtitle">{{ tile.title_light|e }}</span>
+			</span>
+		</a>
+	{% endfor %}
+</section>

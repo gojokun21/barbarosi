@@ -1,0 +1,72 @@
+@use '../abstracts' as *;
+
+.category-carousel {
+	padding: 28px 0 44px;
+	overflow: hidden;
+	background: $color-surface;
+
+	&__title {
+		@include stacked-title($fs-lg, 1);
+		align-items: center;
+		padding-inline: $page-gutter;
+	}
+
+	&__viewport {
+		margin-top: 32px;
+		overflow: hidden;
+
+		@media (prefers-reduced-motion: reduce) {
+			overflow-x: auto;
+		}
+	}
+
+	// Lista e randată de 4 ori -> -50% = exact 2 copii, deci bucla e perfectă
+	&__track {
+		display: flex;
+		width: max-content;
+		animation: category-marquee 70s linear infinite;
+
+		&:hover,
+		&:focus-within {
+			animation-play-state: paused;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+	}
+
+	// Ca în referință: slide 265px + 10px spațiu, imagine 200×200 (la 1920px)
+	&__item {
+		flex: 0 0 auto;
+		width: clamp(150px, 14.3vw, 275px);
+		padding-inline: 5px;
+
+		a {
+			display: block;
+		}
+	}
+
+	&__img {
+		width: clamp(120px, 10.4vw, 200px);
+		height: auto;
+		margin-inline: auto;
+		aspect-ratio: 1;
+		object-fit: contain;
+		transition: transform 0.4s $ease;
+	}
+
+	&__item a {
+		@include hover {
+			.category-carousel__img {
+				transform: scale(1.06);
+			}
+		}
+	}
+}
+
+@keyframes category-marquee {
+	to {
+		transform: translateX(-50%);
+	}
+}

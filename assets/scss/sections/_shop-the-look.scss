@@ -1,0 +1,86 @@
+@use '../abstracts' as *;
+
+.looks {
+	position: relative;
+
+	&__title {
+		position: absolute;
+		top: 20px;
+		left: $page-gutter;
+		z-index: 4;
+		font-size: $fs-lg;
+		font-weight: 700;
+		line-height: 1;
+		text-transform: uppercase;
+		pointer-events: none;
+	}
+
+	// Mobil: carusel orizontal cu snap; desktop: 3 coloane
+	&__grid {
+		display: grid;
+		grid-auto-columns: 85%;
+		grid-auto-flow: column;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		@include mq(md) {
+			grid-auto-flow: row;
+			grid-template-columns: repeat(3, 1fr);
+			overflow: visible;
+		}
+	}
+}
+
+.look {
+	position: relative;
+	aspect-ratio: 4 / 5;
+	overflow: hidden;
+	scroll-snap-align: start;
+	background: $color-image-bg;
+
+	&__img {
+		@include cover-media;
+	}
+
+	&__toggle {
+		position: absolute;
+		right: 16px;
+		bottom: 16px;
+		z-index: 3;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		color: $color-white;
+		filter: drop-shadow(0 0 2px rgba($color-black, 0.35));
+
+		span {
+			display: inline-flex;
+		}
+	}
+
+	&__panel {
+		position: absolute;
+		top: 12%;
+		right: 10px;
+		bottom: 10%;
+		z-index: 2;
+		width: min(240px, 62%);
+		padding: 8px;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		scrollbar-width: thin;
+		background: $color-white;
+	}
+
+	&__products {
+		display: grid;
+		gap: 4px;
+	}
+}

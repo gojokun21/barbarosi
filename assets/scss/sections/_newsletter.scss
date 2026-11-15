@@ -1,0 +1,104 @@
+@use '../abstracts' as *;
+
+.newsletter {
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	padding: 48px $page-gutter;
+	background: $color-surface;
+
+	@include mq(lg) {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 56px 30px 56px 32px;
+	}
+
+	&__title {
+		@include stacked-title(30px);
+
+		@include mq(md) {
+			font-size: $fs-xl;
+		}
+	}
+
+	&__text {
+		max-width: 340px;
+		margin-top: 24px;
+		font-size: $fs-sm;
+		line-height: 1.2;
+		text-transform: uppercase;
+	}
+
+	&__form {
+		width: 100%;
+
+		@include mq(lg) {
+			width: 445px;
+		}
+	}
+
+	&__field {
+		display: flex;
+		height: 64px;
+		border: 1px solid $color-black;
+
+		@include mq(lg) {
+			height: 75px;
+		}
+
+		&:focus-within {
+			outline: 2px solid $color-black;
+			outline-offset: 2px;
+		}
+	}
+
+	&__input {
+		flex: 1;
+		min-width: 0;
+		padding: 0 24px;
+		font-size: $fs-sm;
+		background: transparent;
+		border: 0;
+		outline: none;
+
+		&::placeholder {
+			color: $color-text;
+			opacity: 0.85;
+		}
+	}
+
+	&__submit {
+		padding: 0 24px;
+		font-size: $fs-sm;
+		font-weight: 700;
+		text-transform: uppercase;
+
+		&:disabled {
+			cursor: wait;
+			opacity: 0.5;
+		}
+
+		@include hover {
+			text-decoration: underline;
+			text-underline-offset: 3px;
+		}
+	}
+
+	&__consent {
+		margin-top: 20px;
+	}
+
+	&__error {
+		margin-top: 12px;
+		font-size: $fs-xs;
+		text-transform: uppercase;
+		color: #c00;
+	}
+
+	&__success {
+		font-size: $fs-sm;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+}

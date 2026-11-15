@@ -1,0 +1,33 @@
+{# Abonare newsletter. Parametri: newsletter { title_strong, title_light, text, privacy_url } #}
+<section class="newsletter" x-data="newsletter">
+	<div class="newsletter__intro">
+		<h2 class="newsletter__title">
+			<span class="newsletter__title-strong">{{ newsletter.title_strong|e }}</span>
+			<span class="newsletter__title-light">{{ newsletter.title_light|e }}</span>
+		</h2>
+		<p class="newsletter__text">{{ newsletter.text|e }}</p>
+	</div>
+
+	<form class="newsletter__form" @submit.prevent="submit" x-show="status !== 'success'">
+		<div class="newsletter__field">
+			<label class="screen-reader-text" for="newsletter-email">Email</label>
+			<input class="newsletter__input" id="newsletter-email" type="email" name="email" x-model="email" placeholder="Email..." autocomplete="email" required>
+			<button class="newsletter__submit" type="submit" :disabled="status === 'loading'">{{ __('Abonează-te', 'barbarosi') }}</button>
+		</div>
+
+		<label class="checkbox newsletter__consent">
+			<input class="checkbox__input" type="checkbox" name="consent" x-model="agreed" required>
+			<span class="checkbox__box" aria-hidden="true"></span>
+			<span class="checkbox__label">
+				{{ __('Sunt de acord cu', 'barbarosi') }}
+				<a href="{{ newsletter.privacy_url|esc_url }}">{{ __('politica de confidențialitate', 'barbarosi') }}</a>
+			</span>
+		</label>
+
+		<p class="newsletter__error" x-show="error" x-text="error" x-cloak role="alert"></p>
+	</form>
+
+	<p class="newsletter__success" x-show="status === 'success'" x-cloak role="status">
+		{{ __('Mulțumim! Te-ai abonat cu succes.', 'barbarosi') }}
+	</p>
+</section>

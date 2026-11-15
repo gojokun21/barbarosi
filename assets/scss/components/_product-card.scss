@@ -1,0 +1,104 @@
+@use '../abstracts' as *;
+
+.product-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+
+	&__media {
+		position: relative;
+		display: block;
+		aspect-ratio: 5 / 6;
+		overflow: hidden;
+		background: $color-image-bg;
+	}
+
+	&__img {
+		@include cover-media;
+		transition: opacity 0.35s $ease;
+
+		&--hover {
+			opacity: 0;
+		}
+	}
+
+	// Pe hover arătăm a doua poză (packshot)
+	@include hover {
+		.product-card__img--hover {
+			opacity: 1;
+		}
+	}
+
+	&__badge {
+		position: absolute;
+		top: 4px;
+		left: 14px;
+		font-size: 12px;
+		text-transform: uppercase;
+		color: $color-muted-dark;
+	}
+
+	&__info {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 14px 8px 0;
+	}
+
+	&__title {
+		max-width: 240px;
+		font-size: $fs-xs;
+		font-weight: 700;
+		line-height: 1.3;
+		text-transform: uppercase;
+	}
+
+	&__price {
+		margin-top: 6px;
+		font-size: $fs-xs;
+		color: $color-muted;
+	}
+
+	&__swatches {
+		display: flex;
+		flex-shrink: 0;
+		gap: 10px;
+		padding: 2px 4px 0 0;
+	}
+
+	// Varianta din panoul „Shop the look”
+	&--compact &__info {
+		padding: 10px 6px 14px;
+	}
+
+	&--compact &__title {
+		font-size: 9px;
+	}
+
+	&--compact &__price {
+		font-size: 9px;
+	}
+
+	&--compact &__swatches {
+		gap: 8px;
+	}
+}
+
+.swatch {
+	display: block;
+	width: 10px;
+	height: 10px;
+	background: var(--swatch);
+	outline: 1px solid transparent;
+	outline-offset: 2px;
+	transition: outline-color $duration $ease;
+
+	&.is-current {
+		outline-color: var(--swatch);
+	}
+
+	@include hover {
+		outline-color: $color-black;
+	}
+}

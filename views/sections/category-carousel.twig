@@ -1,0 +1,26 @@
+{#
+	Carusel infinit (marquee CSS) cu produse dintr-o categorie.
+	Lista e randată de 4 ori: animația mută banda cu -50%, deci fiecare jumătate trebuie să umple ecranul.
+	Copiile sunt ascunse pentru cititoarele de ecran și scoase din ordinea tab-urilor.
+	Parametri: category { title_strong, title_light, items[] { title, url, image } }
+#}
+<section class="category-carousel" aria-labelledby="category-carousel-title">
+	<h2 class="category-carousel__title" id="category-carousel-title">
+		<span class="category-carousel__title-strong">{{ category.title_strong|e }}</span>
+		<span class="category-carousel__title-light">{{ category.title_light|e }}</span>
+	</h2>
+
+	<div class="category-carousel__viewport">
+		<ul class="category-carousel__track" role="list">
+			{% for copy in 1..4 %}
+				{% for item in category.items %}
+					<li class="category-carousel__item"{% if copy > 1 %} aria-hidden="true"{% endif %}>
+						<a href="{{ item.url|esc_url }}"{% if copy > 1 %} tabindex="-1"{% endif %}>
+							{% include 'partial/image.twig' with { image: item.image, class: 'category-carousel__img', sizes: '220px', alt: copy > 1 ? '' : item.title } only %}
+						</a>
+					</li>
+				{% endfor %}
+			{% endfor %}
+		</ul>
+	</div>
+</section>
