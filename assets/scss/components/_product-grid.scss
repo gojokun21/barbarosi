@@ -1,0 +1,12 @@
+@use '../abstracts' as *;
+
+// Grila de carduri (partial/product-grid.twig): rândul de noutăți de pe prima pagină și shop-ul.
+.product-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 28px 7px;
+
+	@include mq(md) {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}

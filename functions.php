@@ -8,6 +8,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 require_once __DIR__ . '/src/Vite.php';
 require_once __DIR__ . '/src/DemoContent.php';
+require_once __DIR__ . '/src/DemoSeeder.php';
+require_once __DIR__ . '/src/Shop.php';
+require_once __DIR__ . '/src/Checkout.php';
+require_once __DIR__ . '/src/Search.php';
 require_once __DIR__ . '/src/StarterSite.php';
 
 Timber\Timber::init();
@@ -16,6 +20,18 @@ Timber\Timber::init();
 Timber::$dirname = [ 'templates', 'views' ];
 
 new StarterSite();
+
+// WooCommerce: datele pentru template-uri + ajustări (src/Shop.php). Plugin-urile sunt deja încărcate aici.
+Shop::init();
+
+// Coș și checkout: filtre + helpers pentru template-urile din woocommerce/ (src/Checkout.php).
+Checkout::init();
+
+// Căutare: panoul live din header (REST) + pagina de rezultate (src/Search.php, search.php).
+Search::init();
+
+// `wp barbarosi seed` — produsele demo (src/DemoSeeder.php).
+DemoSeeder::register();
 
 /**
  * Fonturi: Archivo (variabil pe lățime — îl folosim „expanded”, aproape de Commuters Sans)

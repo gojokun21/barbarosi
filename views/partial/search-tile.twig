@@ -1,0 +1,50 @@
+{#
+	Produs în panoul de căutare — template Alpine, folosit într-un <template x-for="product in …">.
+	product (Search::tile)  { title, url, price, regular_price?, badge?, image?, hover_image?, category?, colors (număr) }
+	Imaginile sunt decorative: link-ul are deja titlul ca text.
+#}
+<li class="search-tile">
+	<a class="search-tile__link" :href="product.url" data-search-item>
+		<span class="search-tile__media">
+			<template x-if="product.image">
+				<img
+					class="search-tile__img"
+					:src="product.image.src"
+					:srcset="product.image.srcset"
+					:width="product.image.width"
+					:height="product.image.height"
+					sizes="(min-width: 1280px) 14vw, (min-width: 768px) 24vw, 50vw"
+					alt=""
+					loading="lazy"
+					decoding="async"
+				>
+			</template>
+			<template x-if="product.hover_image">
+				<img
+					class="search-tile__img search-tile__img--hover"
+					:src="product.hover_image.src"
+					:srcset="product.hover_image.srcset"
+					:width="product.hover_image.width"
+					:height="product.hover_image.height"
+					sizes="(min-width: 1280px) 14vw, (min-width: 768px) 24vw, 50vw"
+					alt=""
+					loading="lazy"
+					decoding="async"
+				>
+			</template>
+			<span class="search-tile__badge" x-show="product.badge" x-text="product.badge"></span>
+		</span>
+
+		<span class="search-tile__info">
+			<span class="search-tile__category" x-show="product.category" x-text="product.category"></span>
+			<span class="search-tile__title" x-html="highlight(product.title)"></span>
+			<span class="search-tile__price">
+				<template x-if="product.regular_price">
+					<s class="search-tile__price-old"><span class="screen-reader-text">{{ __('Preț inițial:', 'barbarosi') }} </span><span x-text="product.regular_price"></span></s>
+				</template>
+				<span x-text="product.price"></span>
+			</span>
+			<span class="search-tile__colors" x-show="product.colors > 1"><span x-text="product.colors"></span> {{ __('culori', 'barbarosi') }}</span>
+		</span>
+	</a>
+</li>

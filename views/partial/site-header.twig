@@ -1,9 +1,7 @@
 {#
-	Header: stânga navigație (mega meniu), centru logo, dreapta căutare / membership / cont / coș.
+	Header: stânga navigație (mega meniu), centru logo, dreapta căutare (partial/header-search.twig) / cont / coș.
 	Pe prima pagină e transparent peste hero și devine alb la scroll, hover sau meniu deschis.
 #}
-{% set home_url = function('home_url', '/') %}
-
 <header
 	class="site-header{{ header_transparent ? ' is-transparent' }}"
 	x-data="siteHeader({ transparent: {{ header_transparent ? 'true' : 'false' }} })"
@@ -58,30 +56,21 @@
 			</nav>
 		</div>
 
-		<a class="site-logo" href="{{ home_url|esc_url }}" rel="home">
-			{% if logo %}
-				<img class="site-logo__img" src="{{ logo.src|esc_url }}" alt="{{ site.name|esc_attr }}" width="{{ logo.width }}" height="{{ logo.height }}">
-			{% else %}
-				<span class="site-logo__text">{{ site.name|e }}</span>
-			{% endif %}
-		</a>
+		{% include 'partial/site-logo.twig' %}
 
 		<div class="site-header__end">
-			<form class="header-search" role="search" method="get" action="{{ home_url|esc_url }}">
-				<label class="screen-reader-text" for="header-search-input">{{ __('Caută', 'barbarosi') }}</label>
-				<input class="header-search__input" id="header-search-input" type="search" name="s" placeholder="{{ __('Caută...', 'barbarosi') }}" autocomplete="off">
-				<button class="header-search__submit" type="submit" aria-label="{{ __('Caută', 'barbarosi') }}">
-					{% include 'partial/icon.twig' with { name: 'search' } only %}
-				</button>
-			</form>
-
-			<a class="header-membership" href="{{ header.membership.url|esc_url }}">{{ header.membership.title|e }}</a>
+			{% include 'partial/header-search.twig' with { search: header.search } only %}
 
 			<a class="site-header__icon site-header__account" href="{{ header.account_url|esc_url }}" aria-label="{{ __('Contul meu', 'barbarosi') }}">
 				{% include 'partial/icon.twig' with { name: 'user' } only %}
 			</a>
-			<a class="site-header__icon" href="{{ header.cart_url|esc_url }}" aria-label="{{ __('Coșul de cumpărături', 'barbarosi') }}">
+			<a class="site-header__icon site-header__cart" href="{{ header.cart_url|esc_url }}">
 				{% include 'partial/icon.twig' with { name: 'bag' } only %}
+				<span class="screen-reader-text">{{ __('Coșul de cumpărături', 'barbarosi') }}</span>
+				{# Actualizat din JS când coșul se schimbă prin AJAX (assets/js/shop/cart.js) #}
+				<span class="site-header__count" data-cart-badge {{ not header.cart_count ? 'hidden' }}>
+					<span data-cart-badge-count>{{ header.cart_count }}</span><span class="screen-reader-text"> {{ __('produse', 'barbarosi') }}</span>
+				</span>
 			</a>
 		</div>
 	</div>

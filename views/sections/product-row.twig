@@ -1,10 +1,4 @@
 {# Rând de 4 produse noi. Parametri: section { title?, products[] } #}
 <section class="product-row" aria-label="{{ section.title|default(__('Noutăți', 'barbarosi'))|esc_attr }}">
-	<ul class="product-row__grid" role="list">
-		{% for product in section.products %}
-			<li>
-				{% include 'partial/product-card.twig' with { product: product, sizes: '(min-width: 768px) 25vw, 50vw' } only %}
-			</li>
-		{% endfor %}
-	</ul>
+	{% include 'partial/product-grid.twig' with { products: section.products } only %}
 </section>

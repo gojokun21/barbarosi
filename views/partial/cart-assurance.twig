@@ -1,0 +1,26 @@
+{#
+	Garanțiile de sub butonul de checkout (livrare, retur, plată) + metodele de plată.
+	Parametri: perks[] { icon, text }  (DemoContent::product_perks), payments[]  (DemoContent::payment_methods)
+#}
+<div class="cart-assurance">
+	{% if perks %}
+		<ul class="cart-assurance__perks" role="list">
+			{% for perk in perks %}
+				<li class="cart-assurance__perk">
+					{% include 'partial/icon.twig' with { name: perk.icon } only %}
+					<span>{{ perk.text|e }}</span>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	{% if payments %}
+		<ul class="payment-icons cart-assurance__payments" role="list" aria-label="{{ __('Metode de plată acceptate', 'barbarosi') }}">
+			{% for method in payments %}
+				<li class="payment-icon payment-icon--{{ method }}">
+					{% include 'partial/payment-icon.twig' with { name: method } only %}
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+</div>

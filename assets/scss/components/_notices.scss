@@ -1,0 +1,79 @@
+@use '../abstracts' as *;
+
+// Notificări: ale temei (Shop::notices — pagina de produs) și cele printate de WooCommerce
+// (coș, checkout: .woocommerce-message | .woocommerce-info | ul.woocommerce-error).
+%notice {
+	padding: 12px 16px;
+	font-size: 12px;
+	line-height: 1.4;
+	list-style: none;
+	background: $color-surface;
+
+	a {
+		margin-left: 4px;
+		font-weight: 700;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+}
+
+%notice-error {
+	color: $color-error;
+	border-left-color: currentColor;
+}
+
+.notices {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 24px;
+}
+
+.notice {
+	@extend %notice;
+
+	&--error {
+		@extend %notice-error;
+	}
+}
+
+.woocommerce-message,
+.woocommerce-info,
+.woocommerce-error {
+	@extend %notice;
+
+	margin: 0 0 16px;
+}
+
+.woocommerce-error {
+	@extend %notice-error;
+
+	li + li {
+		margin-top: 4px;
+	}
+
+	// Pe checkout, erorile câmpurilor devin link-uri spre câmp
+	a {
+		margin-left: 0;
+		font-weight: 400;
+	}
+}
+
+// Butonul „Vezi coșul” din mesajele WooCommerce — ca link în text
+.woocommerce-message .button,
+.woocommerce-info .button {
+	margin-left: 4px;
+	font-weight: 700;
+	text-decoration: underline;
+}
+
+.woocommerce-notices-wrapper:empty {
+	display: none;
+}
+
+.woocommerce-NoticeGroup {
+	margin-bottom: 24px;
+
+	> :last-child {
+		margin-bottom: 0;
+	}
+}

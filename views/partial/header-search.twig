@@ -1,0 +1,195 @@
+{#
+	Căutare cu rezultate live: assets/js/components/header-search.js, date din Search::live (REST).
+	Desktop: câmpul din header + panoul de sub header. Mobil: iconița deschide un ecran complet cu același câmp.
+	Fără JavaScript rămâne un formular obișnuit spre pagina de rezultate (search.php).
+	Parametri:
+	  search  { popular[] { title, url } }  (DemoContent::header)
+#}
+{% set home_url = function('home_url', '/') %}
+{% set config = {
+	endpoint: function('rest_url', 'barbarosi/v1/search'),
+	recommendedEndpoint: function('rest_url', 'barbarosi/v1/search/recommended'),
+	searchUrl: home_url,
+} %}
+
+<div
+	class="header-search"
+	x-data="headerSearch({{ config|json_encode|esc_attr }})"
+	:class="{ 'is-open': $store.search.open }"
+	@search:open.window="show()"
+	@keydown.window="shortcut($event)"
+	@keydown.escape.window="close()"
+	@pointerdown.window="onPointerDown($event)"
+	@resize.window.debounce="fitPanel()"
+	@focusout="onFocusOut($event)"
+>
+	{# Mobil #}
+	<button
+		type="button"
+		class="site-header__icon header-search__toggle"
+		x-ref="toggle"
+		@click="show()"
+		aria-controls="search-panel"
+		:aria-expanded="$store.search.open.toString()"
+		aria-expanded="false"
+		aria-label="{{ __('Caută', 'barbarosi') }}"
+	>
+		{% include 'partial/icon.twig' with { name: 'search' } only %}
+	</button>
+
+	<form
+		class="header-search__form"
+		role="search"
+		method="get"
+		action="{{ home_url|esc_url }}"
+		@submit="submit($event)"
+		@pointerenter.once="loadRecommended()"
+	>
+		<div class="header-search__field">
+			<label class="screen-reader-text" for="header-search-input">{{ __('Caută produse', 'barbarosi') }}</label>
+			<input
+				class="header-search__input"
+				id="header-search-input"
+				type="search"
+				name="s"
+				placeholder="{{ __('Caută...', 'barbarosi') }}"
+				autocomplete="off"
+				autocorrect="off"
+				spellcheck="false"
+				enterkeyhint="search"
+				maxlength="100"
+				aria-controls="search-panel"
+				x-ref="input"
+				x-model="query"
+				@focus="show()"
+				@click="show()"
+				@input="show()"
+				@keydown.down.prevent="focusItem(0)"
+				{# Esc închide panoul; fără prevent, browserul ar goli și câmpul #}
+				@keydown.escape.prevent
+			>
+			<button type="button" class="header-search__clear" x-cloak x-show="query" @click="clear()">
+				<span class="screen-reader-text">{{ __('Șterge textul', 'barbarosi') }}</span>
+				{% include 'partial/icon.twig' with { name: 'close' } only %}
+			</button>
+			<button class="header-search__submit" type="submit" aria-label="{{ __('Caută', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'search' } only %}
+			</button>
+		</div>
+		<button type="button" class="header-search__cancel" @click="close()">{{ __('Anulează', 'barbarosi') }}</button>
+	</form>
+
+	{# Anunțat de cititoarele de ecran când vin rezultatele („7 produse”) #}
+	<p class="screen-reader-text" role="status" aria-live="polite" x-text="status"></p>
+
+	<div class="header-search__backdrop" x-cloak x-show="$store.search.open" x-transition.opacity @click="close()"></div>
+
+	<div
+		class="search-panel"
+		id="search-panel"
+		x-ref="panel"
+		x-cloak
+		x-show="$store.search.open"
+		x-transition:enter="search-panel--enter"
+		x-transition:enter-start="search-panel--from"
+		x-transition:leave="search-panel--leave"
+		x-transition:leave-end="search-panel--from"
+		@keydown="onPanelKeydown($event)"
+	>
+		<div class="search-panel__inner" :class="{ 'is-searching': state !== 'idle' }">
+			<div class="search-panel__aside" x-ref="aside">
+				{# Cu termen: categoriile al căror nume se potrivește #}
+				<section class="search-panel__group" x-show="state === 'results' && results.categories.length">
+					<div class="search-panel__head">
+						<h2 class="search-panel__title">{{ __('Categorii', 'barbarosi') }}</h2>
+					</div>
+					<ul class="search-panel__categories" role="list">
+						<template x-for="category in results?.categories ?? []" :key="category.url">
+							<li>
+								<a class="search-panel__category" :href="category.url" data-search-item>
+									<span x-html="highlight(category.name)"></span>
+									<span class="search-panel__category-count" x-text="category.count"></span>
+								</a>
+							</li>
+						</template>
+					</ul>
+				</section>
+
+				{% if search.popular %}
+					<section class="search-panel__group">
+						<div class="search-panel__head">
+							<h2 class="search-panel__title">{{ __('Căutări populare', 'barbarosi') }}</h2>
+						</div>
+						<ul class="chip-list" role="list">
+							{% for item in search.popular %}
+								<li>
+									<a class="chip" href="{{ item.url|esc_url }}" data-term="{{ item.title|esc_attr }}" data-search-item @click="pickLink($event)">{{ item.title|e }}</a>
+								</li>
+							{% endfor %}
+						</ul>
+					</section>
+				{% endif %}
+			</div>
+
+			<div class="search-panel__main" x-ref="main">
+				{# Rezultate; la prima încărcare, schelete în locul lor #}
+				<section class="search-panel__group" x-show="state === 'results' || state === 'loading'">
+					<div class="search-panel__head">
+						<h2 class="search-panel__title">
+							{{ __('Produse', 'barbarosi') }}
+							<span class="search-panel__total" x-show="state === 'results'" x-text="results?.total"></span>
+						</h2>
+						<a class="search-panel__all" :href="urlFor(term)" x-show="state === 'results'">
+							{{ __('Vezi toate', 'barbarosi') }}
+							{% include 'partial/icon.twig' with { name: 'arrow-right' } only %}
+						</a>
+					</div>
+
+					<ul class="search-panel__grid" :class="{ 'is-stale': loading && state === 'results' }" role="list">
+						<template x-for="n in (state === 'loading' ? 6 : 0)" :key="n">
+							<li class="search-tile search-tile--skeleton" aria-hidden="true">
+								<span class="search-tile__media"></span>
+								<span class="search-tile__line"></span>
+								<span class="search-tile__line search-tile__line--short"></span>
+							</li>
+						</template>
+						<template x-for="product in (state === 'results' ? results.products : [])" :key="product.id">
+							{% include 'partial/search-tile.twig' %}
+						</template>
+					</ul>
+
+					<a
+						class="btn btn--primary btn--block search-panel__more"
+						:href="urlFor(term)"
+						x-show="state === 'results' && results.total > results.products.length"
+					>{{ __('Vezi toate cele', 'barbarosi') }} <span x-text="results?.count"></span></a>
+				</section>
+
+				<div class="search-panel__message" x-show="state === 'empty'">
+					<p class="search-panel__message-title">{{ __('Niciun rezultat pentru', 'barbarosi') }} „<span x-text="results?.query"></span>”</p>
+					<p>{{ __('Verifică ortografia sau încearcă un termen mai general.', 'barbarosi') }}</p>
+				</div>
+
+				<div class="search-panel__message" x-show="state === 'error'">
+					<p class="search-panel__message-title">{{ __('Nu am putut încărca rezultatele.', 'barbarosi') }}</p>
+					<p><a class="search-panel__retry" :href="urlFor(term)">{{ __('Vezi toate rezultatele', 'barbarosi') }}</a></p>
+				</div>
+
+				{# Fără termen: noutățile; fără rezultate: aceleași, ca sugestii #}
+				<section class="search-panel__group" x-show="(state === 'idle' || state === 'empty') && recommended.length">
+					<div class="search-panel__head">
+						<h2 class="search-panel__title">
+							<span x-show="state === 'idle'">{{ __('Noutăți', 'barbarosi') }}</span>
+							<span x-show="state === 'empty'">{{ __('Poate te interesează', 'barbarosi') }}</span>
+						</h2>
+					</div>
+					<ul class="search-panel__grid" role="list">
+						<template x-for="product in recommended" :key="product.id">
+							{% include 'partial/search-tile.twig' %}
+						</template>
+					</ul>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>

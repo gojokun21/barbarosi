@@ -1,0 +1,45 @@
+{#
+	Ghid de mărimi: <dialog> nativ (focus trap și Esc incluse), deschis de evenimentul `size-guide:open`.
+	Parametri: guide { title, columns[], rows[][], note }  (vezi DemoContent::size_guide)
+#}
+<dialog
+	class="size-guide"
+	aria-labelledby="size-guide-title"
+	x-data
+	@size-guide:open.window="$el.showModal()"
+	@click="$event.target === $el && $el.close()"
+>
+	<div class="size-guide__inner">
+		<div class="size-guide__header">
+			<h2 class="size-guide__title" id="size-guide-title">{{ guide.title|e }}</h2>
+			<button type="button" class="size-guide__close" @click="$root.close()" aria-label="{{ __('Închide', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'close' } only %}
+			</button>
+		</div>
+
+		<table class="size-guide__table">
+			<thead>
+				<tr>
+					{% for column in guide.columns %}
+						<th scope="col">{{ column|e }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for row in guide.rows %}
+					<tr>
+						{% for cell in row %}
+							{% if loop.first %}
+								<th scope="row">{{ cell|e }}</th>
+							{% else %}
+								<td>{{ cell|e }}</td>
+							{% endif %}
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<p class="size-guide__note">{{ guide.note|e }}</p>
+	</div>
+</dialog>

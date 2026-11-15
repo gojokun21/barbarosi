@@ -1,0 +1,29 @@
+{#
+	Shop + arhivele de produse (categorii, etichete): aceleași carduri și aceeași grilă ca pe prima pagină.
+	Date: shop (vezi Shop::archive), notices (notificări WooCommerce).
+	`ordering` și `pagination` sunt HTML-ul WooCommerce (woocommerce.js trimite formularul de sortare la schimbare).
+#}
+{% extends 'base.twig' %}
+
+{% block main %}
+	<div class="shop">
+		<header class="shop__header">
+			<div>
+				<h1 class="shop__title">{{ shop.title|e }}</h1>
+				<p class="shop__count">{{ shop.count|e }}</p>
+			</div>
+
+			{{ shop.ordering }}
+		</header>
+
+		{% include 'partial/notices.twig' with { notices: notices } only %}
+
+		{% if shop.products %}
+			{% include 'partial/product-grid.twig' with { products: shop.products, eager: 4 } only %}
+		{% else %}
+			<p class="shop__empty">{{ __('Nu am găsit produse care să corespundă selecției.', 'barbarosi') }}</p>
+		{% endif %}
+
+		{{ shop.pagination }}
+	</div>
+{% endblock %}

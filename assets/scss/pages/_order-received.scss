@@ -1,0 +1,208 @@
+@use '../abstracts' as *;
+
+// Confirmarea comenzii (woocommerce/checkout/thankyou.php) + detaliile comenzii din WooCommerce
+// (order/order-details.php, order/order-details-customer.php).
+.order-received-page {
+	padding: 40px 16px 80px;
+
+	@include mq(lg) {
+		padding-block: 64px 96px;
+	}
+}
+
+.order-confirmation {
+	max-width: 760px;
+	margin-inline: auto;
+
+	&__header {
+		display: grid;
+		justify-items: center;
+		gap: 12px;
+		margin-bottom: 32px;
+		text-align: center;
+	}
+
+	&__icon {
+		display: grid;
+		place-items: center;
+		width: 56px;
+		height: 56px;
+		margin-bottom: 4px;
+		border: 1px solid $color-black;
+		border-radius: 50%;
+
+		.icon {
+			width: 26px;
+			height: 26px;
+		}
+	}
+
+	&__title {
+		font-size: $fs-lg;
+		font-weight: 700;
+		line-height: 1.15;
+		text-transform: uppercase;
+
+		@include mq(md) {
+			font-size: 28px;
+		}
+	}
+
+	&__text {
+		max-width: 480px;
+		font-size: 13px;
+		font-stretch: 100%;
+		line-height: 1.55;
+		color: $color-muted-dark;
+	}
+
+	.woocommerce-thankyou-order-failed {
+		color: $color-error;
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 12px;
+	}
+
+	&__overview {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		border-top: 1px solid $color-border;
+		border-left: 1px solid $color-border;
+
+		@include mq(md) {
+			grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		}
+
+		li {
+			min-width: 0;
+			padding: 16px;
+			overflow-wrap: anywhere; // emailurile lungi
+			font-size: 11px;
+			color: $color-muted-dark;
+			text-transform: uppercase;
+			border-right: 1px solid $color-border;
+			border-bottom: 1px solid $color-border;
+		}
+
+		strong {
+			display: block;
+			margin-top: 4px;
+			font-size: 13px;
+			font-weight: 700;
+			color: $color-black;
+			text-transform: none;
+		}
+	}
+
+	&__continue {
+		margin-top: 48px;
+		text-align: center;
+
+		.btn {
+			min-width: 260px;
+		}
+	}
+
+	// Instrucțiunile metodei de plată (ex. transfer bancar)
+	.woocommerce-bacs-bank-details,
+	> p:not([class]) {
+		margin-top: 32px;
+		font-size: 13px;
+	}
+}
+
+/* Detaliile comenzii (template-urile WooCommerce, folosite și în Contul meu)
+   ---------------------------------------------------------------- */
+
+.woocommerce-order-details,
+.woocommerce-customer-details,
+.woocommerce-bacs-bank-details {
+	margin-top: 40px;
+}
+
+.woocommerce-order-details__title,
+.woocommerce-column__title,
+.wc-bacs-bank-details-heading {
+	margin-bottom: 16px;
+	font-size: $fs-sm;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.woocommerce-table--order-details {
+	width: 100%;
+	font-size: 13px;
+	border-collapse: collapse;
+
+	th,
+	td {
+		padding: 12px 0;
+		text-align: left;
+		vertical-align: top;
+		border-bottom: 1px solid $color-border;
+	}
+
+	th:last-child,
+	td:last-child {
+		padding-left: 16px;
+		text-align: right;
+	}
+
+	thead th {
+		font-size: 11px;
+		text-transform: uppercase;
+		border-bottom-color: $color-black;
+	}
+
+	// Rândurile de totaluri nu au clase în WooCommerce (ordinea diferă între versiuni) — stil uniform.
+	tfoot th {
+		font-weight: 400;
+	}
+
+	.product-quantity {
+		font-weight: 400;
+	}
+
+	.wc-item-meta {
+		margin: 4px 0 0;
+		padding: 0;
+		font-size: 11px;
+		color: $color-muted-dark;
+		text-transform: uppercase;
+		list-style: none;
+
+		li {
+			display: flex;
+			gap: 4px;
+		}
+
+		p {
+			margin: 0;
+		}
+	}
+}
+
+.woocommerce-columns--addresses {
+	display: grid;
+	gap: 24px;
+
+	@include mq(md) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+.woocommerce-customer-details address {
+	padding: 16px;
+	font-size: 13px;
+	font-style: normal;
+	line-height: 1.6;
+	border: 1px solid $color-border;
+
+	p {
+		margin-top: 8px;
+	}
+}

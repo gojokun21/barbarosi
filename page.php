@@ -25,4 +25,15 @@ $context = Timber::context();
 
 $timber_post     = Timber::get_post();
 $context['post'] = $timber_post;
-Timber::render( array( 'page-' . $timber_post->post_name . '.twig', 'page.twig' ), $context );
+$templates       = array( 'page-' . $timber_post->post_name . '.twig', 'page.twig' );
+
+// Paginile WooCommerce „Coș” și „Finalizare comandă” au layout propriu (indiferent de slug).
+if ( function_exists( 'is_cart' ) && is_cart() ) {
+	array_unshift( $templates, 'cart.twig' );
+} elseif ( function_exists( 'is_checkout' ) && is_checkout() ) {
+	$context['order_received'] = is_order_received_page();
+	$context['legal_links']    = DemoContent::legal_links();
+	array_unshift( $templates, 'checkout.twig' );
+}
+
+Timber::render( $templates, $context );

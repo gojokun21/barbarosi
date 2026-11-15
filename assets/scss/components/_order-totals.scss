@@ -1,0 +1,135 @@
+@use '../abstracts' as *;
+
+// Sumarul comenzii — comun coșului (cart/cart-totals.php) și checkout-ului (checkout/review-order.php).
+
+// Cardul gri din coș
+.summary-card {
+	padding: 24px 16px;
+	background: $color-surface;
+
+	@include mq(md) {
+		padding: 32px;
+	}
+
+	&__title {
+		margin-bottom: 20px;
+		font-size: $fs-sm;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+}
+
+// Subtotal / reducere / livrare / total
+.summary-totals {
+	width: 100%;
+	font-size: 13px;
+	border-collapse: collapse;
+
+	th,
+	td {
+		padding: 5px 0;
+		font-weight: 400;
+		vertical-align: baseline;
+	}
+
+	th {
+		padding-right: 16px;
+		text-align: left;
+	}
+
+	td {
+		text-align: right;
+	}
+
+	&__muted {
+		color: $color-muted-dark;
+	}
+
+	&__remove {
+		margin-left: 8px;
+		font-size: 11px;
+		color: $color-muted-dark;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+
+		@include hover {
+			color: $color-black;
+		}
+	}
+
+	.order-total {
+		th,
+		td {
+			padding-top: 16px;
+			font-size: 16px;
+			font-weight: 700;
+			border-top: 1px solid $color-border-strong;
+		}
+
+		td strong {
+			font-weight: inherit;
+		}
+
+		// „(include TVA ...)”
+		small {
+			display: block;
+			font-size: 11px;
+			font-weight: 400;
+			color: $color-muted-dark;
+		}
+	}
+
+	// Rândul de dinaintea totalului lasă loc liniei
+	tr:has(+ .order-total) > * {
+		padding-bottom: 16px;
+	}
+}
+
+// Detaliile produsului: „Mărime: M” (woocommerce/cart/cart-item-data.php)
+.item-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px 12px;
+	margin: 4px 0 0;
+	font-size: 11px;
+	color: $color-muted-dark;
+	text-transform: uppercase;
+
+	&__row {
+		display: flex;
+		gap: 4px;
+	}
+
+	dd {
+		margin: 0;
+	}
+}
+
+// „Mai adaugă produse de X și ai livrare gratuită”
+.free-shipping {
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid $color-border-strong;
+
+	&__text {
+		font-size: 12px;
+
+		strong {
+			font-weight: 700;
+		}
+	}
+
+	&__bar {
+		height: 3px;
+		margin-top: 10px;
+		overflow: hidden;
+		background: $color-border-strong;
+
+		> span {
+			display: block;
+			height: 100%;
+			background: $color-black;
+			transition: width 0.4s $ease;
+		}
+	}
+}

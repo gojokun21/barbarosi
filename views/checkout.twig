@@ -1,0 +1,32 @@
+{#
+	Pagina „Finalizare comandă”. Formularul vine din shortcode-ul WooCommerce, cu template-urile
+	suprascrise în woocommerce/checkout/ (vezi src/Checkout.php).
+
+	Checkout-ul are header și footer simplificate (fără meniu și bara de anunțuri, ca să nu distragă);
+	pagina de confirmare a comenzii revine la cele normale.
+	Date (page.php): order_received (pagina „Comandă primită”), legal_links (footer-ul simplificat).
+#}
+{% extends 'base.twig' %}
+
+{% block header %}
+	{% if order_received %}
+		{{ parent() }}
+	{% else %}
+		{% include 'partial/checkout-header.twig' %}
+	{% endif %}
+{% endblock %}
+
+{% block main %}
+	<div class="{{ order_received ? 'order-received-page' : 'checkout-page' }}">
+		{{ function('do_shortcode', '[woocommerce_checkout]') }}
+	</div>
+{% endblock %}
+
+{% block footer %}
+	{% if order_received %}
+		{{ parent() }}
+	{% else %}
+		{% include 'partial/checkout-footer.twig' %}
+		{{ function('wp_footer') }}
+	{% endif %}
+{% endblock %}

@@ -1,18 +1,13 @@
 <?php
 /**
- * Search results page
+ * Pagina de rezultate ale căutării -> views/search.twig
  *
- * Methods for TimberHelper can be found in the /lib sub-directory
- *
- * @package  WordPress
- * @subpackage  Timber
- * @since   Timber 0.1
+ * Interogarea e cea principală (căutare de produse, vezi Search::search_products_only), deci sortarea și
+ * paginarea vin din WooCommerce, ca în shop. Datele: Search::page().
  */
 
-$templates = array( 'search.twig', 'archive.twig', 'index.twig' );
+$context            = Timber::context();
+$context['search']  = Search::page();
+$context['notices'] = Shop::notices();
 
-$context          = Timber::context();
-$context['title'] = 'Search results for ' . get_search_query();
-$context['posts'] = Timber::get_posts();
-
-Timber::render( $templates, $context );
+Timber::render( 'search.twig', $context );

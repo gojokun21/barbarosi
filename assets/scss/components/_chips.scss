@@ -1,0 +1,65 @@
+@use '../abstracts' as *;
+
+// <ul class="chip-list" role="list"><li><a class="chip is-active">Tricouri <span class="chip__count">4</span></a></li></ul>
+// Căutările populare (panoul de căutare) și filtrele pe categorii (pagina de rezultate).
+.chip-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+
+	// Pe mobil un singur rând, derulat orizontal (iese până la marginea ecranului)
+	&--scroll {
+		@include mq-down(md) {
+			flex-wrap: nowrap;
+			margin-inline: -16px;
+			padding-inline: 16px;
+			overflow-x: auto;
+			scrollbar-width: none;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+
+			> li {
+				flex-shrink: 0;
+			}
+		}
+	}
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 34px;
+	padding: 8px 14px;
+	font-size: $fs-xs;
+	line-height: 1.2;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	background: $color-white;
+	border: 1px solid $color-border-strong;
+	transition:
+		border-color $duration $ease,
+		background-color $duration $ease,
+		color $duration $ease;
+
+	@include hover {
+		border-color: $color-black;
+	}
+
+	&.is-active {
+		color: $color-white;
+		background: $color-black;
+		border-color: $color-black;
+	}
+
+	&__count {
+		color: $color-muted;
+
+		.is-active & {
+			color: rgba($color-white, 0.65);
+		}
+	}
+}

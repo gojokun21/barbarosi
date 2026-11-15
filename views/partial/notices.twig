@@ -1,0 +1,8 @@
+{# Notificările WooCommerce (Shop::notices). Parametri: notices[] { type, message } — message e HTML deja curățat. #}
+{% if notices %}
+	<div class="notices" role="status">
+		{% for notice in notices %}
+			<p class="notice notice--{{ notice.type|esc_attr }}">{{ notice.message }}</p>
+		{% endfor %}
+	</div>
+{% endif %}

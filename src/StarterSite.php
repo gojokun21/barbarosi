@@ -113,6 +113,9 @@ class StarterSite extends Site {
 
 		add_theme_support( 'menus' );
 
+		// Fără asta WooCommerce ignoră single-product.php din temă și rulează în „modul de compatibilitate”.
+		add_theme_support( 'woocommerce' );
+
 		add_theme_support(
 			'custom-logo',
 			array(

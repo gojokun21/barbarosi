@@ -1,0 +1,7 @@
+// Stiluri specifice unei pagini (template-urile din views/ care nu sunt secțiuni)
+@forward 'shop';
+@forward 'search';
+@forward 'product';
+@forward 'cart';
+@forward 'checkout';
+@forward 'order-received';

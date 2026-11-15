@@ -1,0 +1,8 @@
+{# Logo din Customizer (context `logo`), altfel numele site-ului. Folosit în header și în header-ul de checkout. #}
+<a class="site-logo" href="{{ function('home_url', '/')|esc_url }}" rel="home">
+	{% if logo %}
+		<img class="site-logo__img" src="{{ logo.src|esc_url }}" alt="{{ site.name|esc_attr }}" width="{{ logo.width }}" height="{{ logo.height }}">
+	{% else %}
+		<span class="site-logo__text">{{ site.name|e }}</span>
+	{% endif %}
+</a>

@@ -1,13 +1,108 @@
-{# see `archive.twig` for an alternative strategy of extending templates #}
-{% extends "base.twig" %}
+{#
+	Pagina de rezultate ale căutării (search.php). Date: search (vezi Search::page), notices.
+	Aceeași secțiune gri, grilă și carduri ca shop-ul (clasa `shop` aduce și stilurile pentru sortare și paginare).
+	`ordering` și `pagination` sunt HTML-ul WooCommerce (sortarea se trimite singură la schimbare, din woocommerce.js).
+#}
+{% extends 'base.twig' %}
 
-{% block content %}
-  {# see `base.twig:27` for where this block's content will be inserted #}
-  <div class="content-wrapper">
-    {% for post in posts %}
-      {% include ['tease-'~post.post_type~'.twig', 'tease.twig'] %}
-    {% endfor %}
+{% block main %}
+	<div class="shop search-page">
+		<header class="search-page__header">
+			<h1 class="search-page__eyebrow">{{ search.query ? __('Rezultatele căutării', 'barbarosi') : __('Căutare', 'barbarosi') }}</h1>
 
-    {% include 'partial/pagination.twig' with { pagination: posts.pagination({show_all: false, mid_size: 3, end_size: 2}) } %}
-  </div>
+			<form class="search-page__form" role="search" method="get" action="{{ function('home_url', '/')|esc_url }}">
+				<label class="screen-reader-text" for="search-page-input">{{ __('Caută produse', 'barbarosi') }}</label>
+				<input
+					class="search-page__input"
+					id="search-page-input"
+					type="search"
+					name="s"
+					value="{{ search.query|esc_attr }}"
+					placeholder="{{ __('Ce cauți?', 'barbarosi') }}"
+					autocomplete="off"
+					spellcheck="false"
+					enterkeyhint="search"
+					maxlength="100"
+					{{ not search.query ? 'autofocus' }}
+				>
+				<button class="search-page__submit" type="submit" aria-label="{{ __('Caută', 'barbarosi') }}">
+					{% include 'partial/icon.twig' with { name: 'search' } only %}
+				</button>
+			</form>
+
+			{% if search.products %}
+				<div class="search-page__toolbar">
+					<p class="search-page__count">
+						{{ search.count|e }}
+						{% if search.category_name %}{{ __('în', 'barbarosi') }} <strong>{{ search.category_name|e }}</strong>{% endif %}
+					</p>
+					{{ search.ordering }}
+				</div>
+			{% endif %}
+		</header>
+
+		{% if search.facets|length > 1 or (search.facets and not search.all.active) %}
+			<nav class="search-page__facets" aria-label="{{ __('Filtrează după categorie', 'barbarosi') }}">
+				<ul class="chip-list chip-list--scroll" role="list">
+					<li>
+						<a class="chip{{ search.all.active ? ' is-active' }}" href="{{ search.all.url|esc_url }}" {{ search.all.active ? 'aria-current="true"' }}>
+							{{ __('Toate', 'barbarosi') }} <span class="chip__count">{{ search.all.count }}</span>
+						</a>
+					</li>
+					{% for facet in search.facets %}
+						<li>
+							<a class="chip{{ facet.active ? ' is-active' }}" href="{{ facet.url|esc_url }}" {{ facet.active ? 'aria-current="true"' }}>
+								{{ facet.name|e }} <span class="chip__count">{{ facet.count }}</span>
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</nav>
+		{% endif %}
+
+		{% include 'partial/notices.twig' with { notices: notices } only %}
+
+		{% if search.products %}
+			{% include 'partial/product-grid.twig' with { products: search.products, eager: 4 } only %}
+
+			{{ search.pagination }}
+		{% else %}
+			<div class="search-empty">
+				{% if search.query %}
+					<h2 class="search-empty__title">
+						{{ __('Niciun rezultat pentru', 'barbarosi') }} „{{ search.query|e }}”
+						{% if search.category_name %}{{ __('în', 'barbarosi') }} {{ search.category_name|e }}{% endif %}
+					</h2>
+					<ul class="search-empty__tips" role="list">
+						<li>{{ __('Verifică dacă ai scris corect.', 'barbarosi') }}</li>
+						<li>{{ __('Folosește mai puține cuvinte sau un termen mai general („geacă” în loc de „geacă puffer verde”).', 'barbarosi') }}</li>
+						<li>{{ __('Caută după categorie, culoare sau colecție.', 'barbarosi') }}</li>
+					</ul>
+				{% else %}
+					<h2 class="search-empty__title">{{ __('Ce cauți?', 'barbarosi') }}</h2>
+					<p class="search-empty__text">{{ __('Caută după produs, categorie, culoare sau colecție.', 'barbarosi') }}</p>
+				{% endif %}
+
+				{% if search.popular %}
+					<div class="search-empty__popular">
+						<h3 class="search-empty__subtitle">{{ __('Căutări populare', 'barbarosi') }}</h3>
+						<ul class="chip-list" role="list">
+							{% for item in search.popular %}
+								<li><a class="chip" href="{{ item.url|esc_url }}">{{ item.title|e }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			</div>
+
+			{% if search.recommended %}
+				<section class="search-page__recommended" aria-labelledby="search-recommended-title">
+					<h2 class="search-page__subtitle" id="search-recommended-title">
+						{{ search.query ? __('Poate te interesează', 'barbarosi') : __('Noutăți', 'barbarosi') }}
+					</h2>
+					{% include 'partial/product-grid.twig' with { products: search.recommended } only %}
+				</section>
+			{% endif %}
+		{% endif %}
+	</div>
 {% endblock %}

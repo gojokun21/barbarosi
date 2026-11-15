@@ -60,6 +60,10 @@
 		color: $color-muted;
 	}
 
+	&__price-old {
+		margin-right: 4px;
+	}
+
 	&__swatches {
 		display: flex;
 		flex-shrink: 0;
@@ -90,12 +94,23 @@
 	width: 10px;
 	height: 10px;
 	background: var(--swatch);
+	box-shadow: inset 0 0 0 1px rgba($color-black, 0.12); // vizibil și pentru alb
 	outline: 1px solid transparent;
 	outline-offset: 2px;
 	transition: outline-color $duration $ease;
 
 	&.is-current {
 		outline-color: var(--swatch);
+	}
+
+	// Pagina de produs
+	&--lg {
+		width: 16px;
+		height: 16px;
+
+		&.is-current {
+			outline-color: $color-black;
+		}
 	}
 
 	@include hover {

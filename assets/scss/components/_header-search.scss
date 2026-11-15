@@ -1,0 +1,508 @@
+@use '../abstracts' as *;
+
+// Căutarea din header: partial/header-search.twig + assets/js/components/header-search.js
+//
+// Desktop (lg+): câmpul din bară; panoul se deschide sub header, peste un fundal închis.
+// Mobil: iconița din bară; deschis, câmpul devine bara de sus a unui ecran complet, cu panoul dedesubt.
+// Wrapper-ul nu e poziționat: panoul și fundalul se raportează la header (sticky), ca mega meniul.
+
+$sheet-z: 110; // peste drawer-ul mobil (100)
+$sheet-bar-height: $header-height;
+
+.header-search {
+	// Pe mobil ecranul începe sub bara de admin WordPress (aceleași valori ca la drawer)
+	--search-sheet-top: 0px;
+
+	display: flex;
+	align-items: center;
+	height: 100%;
+
+	.admin-bar & {
+		--search-sheet-top: 46px;
+
+		@media (min-width: 783px) {
+			--search-sheet-top: 32px;
+		}
+	}
+
+	&__toggle {
+		@include mq(lg) {
+			display: none;
+		}
+	}
+
+	&__form {
+		display: none;
+		align-items: center;
+
+		@include mq(lg) {
+			display: flex;
+		}
+	}
+
+	&__field {
+		display: flex;
+		flex: 1;
+		align-items: center;
+		min-width: 0;
+		height: 40px;
+		border: 1px solid $color-border-strong;
+		transition: border-color $duration $ease;
+
+		&:focus-within {
+			border-color: currentColor;
+		}
+
+		@include mq(lg) {
+			width: 268px;
+
+			.is-transparent & {
+				border-color: rgba($color-white, 0.6);
+			}
+		}
+	}
+
+	&__input {
+		flex: 1;
+		min-width: 0;
+		height: 100%;
+		padding: 0 4px 0 12px;
+		font-size: 16px; // iOS mărește pagina la focus sub 16px
+		color: inherit;
+		background: transparent;
+		border: 0;
+		border-radius: 0;
+		outline: none; // conturul e pe __field (:focus-within)
+		appearance: none;
+
+		@include mq(lg) {
+			font-size: 12px;
+		}
+
+		&::placeholder {
+			color: inherit;
+			opacity: 0.85;
+		}
+
+		&::-webkit-search-cancel-button,
+		&::-webkit-search-decoration {
+			appearance: none;
+		}
+	}
+
+	&__clear,
+	&__submit {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		width: 34px;
+		height: 100%;
+	}
+
+	&__clear {
+		opacity: 0.6;
+		transition: opacity $duration $ease;
+
+		.icon {
+			width: 14px;
+			height: 14px;
+		}
+
+		@include hover {
+			opacity: 1;
+		}
+	}
+
+	&__submit {
+		margin-right: 3px;
+	}
+
+	&__cancel {
+		flex-shrink: 0;
+		height: 40px;
+		padding: 0 4px 0 14px;
+		font-size: $fs-xs;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+
+		@include mq(lg) {
+			display: none;
+		}
+	}
+
+	// Doar pe desktop; pe mobil panoul acoperă tot ecranul
+	&__backdrop {
+		display: none;
+
+		@include mq(lg) {
+			position: absolute;
+			top: 100%;
+			right: 0;
+			left: 0;
+			display: block;
+			height: 100vh;
+			background: rgba($color-black, 0.4);
+		}
+	}
+
+	// Mobil, deschis: câmpul devine bara de sus a ecranului de căutare
+	@include mq-down(lg) {
+		&.is-open &__form {
+			position: fixed;
+			top: var(--search-sheet-top);
+			right: 0;
+			left: 0;
+			z-index: $sheet-z;
+			display: flex;
+			height: $sheet-bar-height;
+			padding: 0 8px 0 12px;
+			color: $color-black;
+			background: $color-white;
+			border-bottom: 1px solid $color-border;
+		}
+	}
+}
+
+/* Panoul cu rezultate
+   ---------------------------------------------------------------- */
+
+.search-panel {
+	color: $color-black;
+	background: $color-white;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+
+	@include mq-down(lg) {
+		position: fixed;
+		top: calc(var(--search-sheet-top) + #{$sheet-bar-height});
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: $sheet-z;
+	}
+
+	@include mq(lg) {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		left: 0;
+		// --search-top = marginea de jos a header-ului, pusă din JS la deschidere
+		max-height: calc(100vh - var(--search-top, #{$announcement-height + $header-height}));
+		max-height: calc(100dvh - var(--search-top, #{$announcement-height + $header-height}));
+		border-top: 1px solid $color-border;
+	}
+
+	// Clase folosite de x-transition
+	&--enter {
+		transition:
+			opacity 0.22s $ease,
+			transform 0.22s $ease;
+	}
+
+	&--leave {
+		transition: opacity 0.15s $ease;
+
+		// Pe mobil bara cu câmpul dispare imediat — panoul la fel, ca să nu rămână o clipă fără ea
+		@include mq-down(lg) {
+			transition: none;
+		}
+	}
+
+	&--from {
+		opacity: 0;
+
+		@include mq(lg) {
+			transform: translateY(-6px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&--enter,
+		&--leave {
+			transition: none;
+		}
+	}
+
+	&__inner {
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+		padding: 20px 16px 40px;
+
+		@include mq(lg) {
+			display: grid;
+			grid-template-columns: 200px minmax(0, 1fr);
+			gap: 56px;
+			padding: 32px 40px 48px;
+		}
+	}
+
+	&__aside,
+	&__main {
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+		min-width: 0;
+	}
+
+	// Pe mobil, cât cauți, rezultatele vin înaintea sugestiilor
+	@include mq-down(lg) {
+		&__inner.is-searching &__main {
+			order: -1;
+		}
+	}
+
+	&__head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 16px;
+	}
+
+	&__title {
+		font-size: $fs-xs;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	&__total {
+		margin-left: 2px;
+		font-weight: 400;
+		color: $color-muted;
+
+		&::before {
+			content: '(';
+		}
+
+		&::after {
+			content: ')';
+		}
+	}
+
+	&__all {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		font-size: $fs-xs;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		white-space: nowrap;
+
+		.icon {
+			width: 14px;
+			height: 14px;
+			transition: transform $duration $ease;
+		}
+
+		@include hover {
+			.icon {
+				transform: translateX(3px);
+			}
+		}
+	}
+
+	// Categoriile găsite
+	&__categories {
+		display: grid;
+		gap: 2px;
+	}
+
+	&__category {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 12px;
+		padding-block: 8px;
+		font-size: $fs-xs;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+
+		@include hover {
+			text-decoration: underline;
+			text-underline-offset: 3px;
+		}
+	}
+
+	&__category-count {
+		flex-shrink: 0;
+		color: $color-muted;
+		text-transform: none;
+	}
+
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 24px 8px;
+		transition: opacity $duration $ease;
+
+		@include mq(md) {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		@include mq(xl) {
+			grid-template-columns: repeat(6, minmax(0, 1fr));
+			gap: 24px 10px;
+		}
+
+		// Rezultatele pentru termenul anterior, cât se încarcă cele noi
+		&.is-stale {
+			opacity: 0.4;
+		}
+	}
+
+	&__more {
+		margin-top: 28px;
+
+		@include mq(lg) {
+			display: none;
+		}
+	}
+
+	&__message {
+		font-size: 12px;
+		line-height: 1.6;
+		color: $color-muted-dark;
+	}
+
+	&__message-title {
+		margin-bottom: 4px;
+		font-size: $fs-sm;
+		font-weight: 700;
+		line-height: 1.3;
+		text-transform: uppercase;
+		color: $color-black;
+		overflow-wrap: anywhere;
+	}
+
+	&__retry {
+		color: $color-black;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+}
+
+// Termenii căutați, în titluri și categorii (header-search.js -> highlight)
+.search-panel__category mark,
+.search-tile__title mark {
+	color: inherit;
+	background: none;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+/* Produs în panou (partial/search-tile.twig)
+   ---------------------------------------------------------------- */
+
+.search-tile {
+	min-width: 0;
+
+	&__link {
+		display: block;
+	}
+
+	&__media {
+		position: relative;
+		display: block;
+		aspect-ratio: 5 / 6;
+		overflow: hidden;
+		background: $color-image-bg;
+	}
+
+	&__img {
+		@include cover-media;
+		transition: opacity 0.35s $ease;
+
+		&--hover {
+			opacity: 0;
+		}
+	}
+
+	&__link {
+		@include hover {
+			.search-tile__img--hover {
+				opacity: 1;
+			}
+		}
+	}
+
+	&__badge {
+		position: absolute;
+		top: 4px;
+		left: 8px;
+		font-size: $fs-xs;
+		text-transform: uppercase;
+		color: $color-muted-dark;
+	}
+
+	&__info {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		padding: 10px 4px 0;
+	}
+
+	&__category,
+	&__colors {
+		font-size: 9px;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: $color-muted;
+	}
+
+	&__title {
+		display: -webkit-box;
+		overflow: hidden;
+		font-size: $fs-xs;
+		font-weight: 700;
+		line-height: 1.3;
+		text-transform: uppercase;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+	}
+
+	&__price {
+		font-size: $fs-xs;
+		color: $color-muted;
+	}
+
+	&__price-old {
+		margin-right: 4px;
+	}
+
+	// Schelet la prima încărcare
+	&--skeleton &__media,
+	&__line {
+		background: linear-gradient(90deg, $color-image-bg 0%, #f7f7f7 50%, $color-image-bg 100%) 0 0 / 200% 100%;
+		animation: search-shimmer 1.2s linear infinite;
+	}
+
+	&__line {
+		display: block;
+		width: 75%;
+		height: 8px;
+		margin: 12px 4px 0;
+
+		&--short {
+			width: 40%;
+			margin-top: 6px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&--skeleton &__media,
+		&__line {
+			animation: none;
+		}
+	}
+}
+
+@keyframes search-shimmer {
+	to {
+		background-position: -200% 0;
+	}
+}

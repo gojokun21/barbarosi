@@ -27,13 +27,11 @@
 			</button>
 		</div>
 
-		<form class="header-search mobile-drawer__search" role="search" method="get" action="{{ function('home_url', '/')|esc_url }}">
-			<label class="screen-reader-text" for="drawer-search-input">{{ __('Caută', 'barbarosi') }}</label>
-			<input class="header-search__input" id="drawer-search-input" type="search" name="s" placeholder="{{ __('Caută...', 'barbarosi') }}" autocomplete="off">
-			<button class="header-search__submit" type="submit" aria-label="{{ __('Caută', 'barbarosi') }}">
-				{% include 'partial/icon.twig' with { name: 'search' } only %}
-			</button>
-		</form>
+		{# Deschide căutarea din header (partial/header-search.twig) — una singură, cu rezultate live #}
+		<button type="button" class="mobile-drawer__search" @click="drawerOpen = false; $dispatch('search:open')" aria-controls="search-panel">
+			<span>{{ __('Caută...', 'barbarosi') }}</span>
+			{% include 'partial/icon.twig' with { name: 'search' } only %}
+		</button>
 
 		<ul class="mobile-drawer__nav" role="list">
 			{% for item in header.nav %}

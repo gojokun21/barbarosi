@@ -1,0 +1,13 @@
+{#
+	Grila de carduri de produs: 2 coloane pe mobil, 4 de la md. Aceeași pe prima pagină și în shop.
+	Parametri:
+	  products  carduri (Shop::card)
+	  eager     câte carduri de la început își încarcă imaginea imediat — cele vizibile la deschiderea paginii (implicit 0)
+#}
+<ul class="product-grid" role="list">
+	{% for product in products %}
+		<li>
+			{% include 'partial/product-card.twig' with { product: product, sizes: '(min-width: 768px) 25vw, 50vw', eager: loop.index <= eager|default(0) } only %}
+		</li>
+	{% endfor %}
+</ul>

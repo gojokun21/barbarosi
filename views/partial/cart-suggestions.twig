@@ -1,0 +1,14 @@
+{#
+	Produse sugerate sub coș: rând orizontal pe mobil (două carduri vizibile), 4 coloane pe desktop.
+	Parametri: title, products[]  (Shop::card)
+#}
+<section class="cart-suggestions" aria-labelledby="cart-suggestions-title">
+	<h2 class="cart-suggestions__title" id="cart-suggestions-title">{{ title|e }}</h2>
+	<ul class="cart-suggestions__list" role="list">
+		{% for product in products %}
+			<li>
+				{% include 'partial/product-card.twig' with { product: product, sizes: '(min-width: 1024px) 25vw, 50vw' } only %}
+			</li>
+		{% endfor %}
+	</ul>
+</section>

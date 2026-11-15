@@ -1,14 +1,15 @@
 {#
 	Card de produs.
 	Parametri:
-	  product  { title, price, url, badge?, image, hover_image?, colors? }
+	  product  { title, price, regular_price?, url, badge?, image, hover_image?, colors?[] { name, hex, url? } }
 	  sizes    atributul sizes pentru imagini
 	  compact  true = varianta mică din „Shop the look” (fără badge și hover)
+	  eager    true = imaginea se încarcă imediat (cardurile vizibile la deschiderea paginii)
 #}
 {% set compact = compact|default(false) %}
 <article class="product-card{{ compact ? ' product-card--compact' }}">
 	<a class="product-card__media" href="{{ product.url|esc_url }}" tabindex="-1" aria-hidden="true">
-		{% include 'partial/image.twig' with { image: product.image, class: 'product-card__img', sizes: sizes, alt: '' } only %}
+		{% include 'partial/image.twig' with { image: product.image, class: 'product-card__img', sizes: sizes, alt: '', loading: eager|default(false) ? 'eager' : 'lazy' } only %}
 		{% if product.hover_image and not compact %}
 			{% include 'partial/image.twig' with { image: product.hover_image, class: 'product-card__img product-card__img--hover', sizes: sizes, alt: '' } only %}
 		{% endif %}
@@ -20,7 +21,12 @@
 	<div class="product-card__info">
 		<div class="product-card__text">
 			<h3 class="product-card__title"><a href="{{ product.url|esc_url }}">{{ product.title|e }}</a></h3>
-			<p class="product-card__price">{{ product.price|e }}</p>
+			<p class="product-card__price">
+				{% if product.regular_price is defined and product.regular_price %}
+					<s class="product-card__price-old"><span class="screen-reader-text">{{ __('Preț inițial:', 'barbarosi') }} </span>{{ product.regular_price|e }}</s>
+				{% endif %}
+				{{ product.price|e }}
+			</p>
 		</div>
 
 		{% if product.colors|length > 1 %}
@@ -29,7 +35,7 @@
 					<li>
 						<a
 							class="swatch{{ loop.first ? ' is-current' }}"
-							href="{{ product.url|esc_url }}"
+							href="{{ color.url|default(product.url)|esc_url }}"
 							style="--swatch: {{ color.hex|esc_attr }}"
 							title="{{ color.name|esc_attr }}"
 						><span class="screen-reader-text">{{ color.name|e }}</span></a>

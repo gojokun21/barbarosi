@@ -1,0 +1,108 @@
+@use '../abstracts' as *;
+
+// Galeria din pagina de produs (views/partial/product-gallery.twig).
+// Mobil: o poză pe toată lățimea. Desktop: pozele umplu înălțimea coloanei (setată de .pdp__gallery),
+// iar următoarea se vede parțial în dreapta.
+.pdp-gallery {
+	position: relative;
+	height: 100%;
+	background: $color-image-bg;
+
+	&__track {
+		position: relative; // referința pentru offsetLeft în product-gallery.js
+		display: flex;
+		height: 100%;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		&:focus-visible {
+			outline-offset: -2px;
+		}
+	}
+
+	&__slide {
+		position: relative;
+		flex: 0 0 100%;
+		aspect-ratio: $product-image-ratio;
+		scroll-snap-align: start;
+
+		@include mq(lg) {
+			flex-basis: min(100%, calc(var(--gallery-height) * #{$product-image-ratio}));
+			aspect-ratio: auto;
+			height: 100%;
+		}
+	}
+
+	&__img {
+		@include cover-media;
+	}
+
+	&__badge {
+		position: absolute;
+		top: 12px;
+		left: 16px;
+		font-size: 12px;
+		color: $color-muted-dark;
+		text-transform: uppercase;
+		pointer-events: none;
+
+		@include mq(lg) {
+			top: 24px;
+			left: 40px;
+		}
+	}
+
+	&__nav {
+		position: absolute;
+		bottom: 12px;
+		left: 50%;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		transform: translateX(-50%);
+
+		@include mq(lg) {
+			bottom: 24px;
+		}
+	}
+
+	&__arrow {
+		display: grid;
+		place-items: center;
+		width: 32px;
+		height: 32px;
+		transition: opacity $duration $ease;
+
+		&:disabled {
+			cursor: default;
+			opacity: 0.25;
+		}
+	}
+
+	&__progress {
+		display: flex;
+		gap: 6px;
+		padding: 0;
+		list-style: none;
+
+		li {
+			width: 16px;
+			height: 1px;
+			background: rgba($color-black, 0.25);
+			transition:
+				width $duration $ease,
+				background-color $duration $ease;
+
+			&.is-active {
+				width: 32px;
+				background: $color-black;
+			}
+		}
+	}
+}

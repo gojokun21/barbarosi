@@ -1,0 +1,44 @@
+{#
+	Galeria din pagina de produs: slider orizontal cu scroll-snap (funcționează și cu swipe / trackpad),
+	săgeți și indicator de progres.
+	Parametri:
+	  images  [ { src, srcset, alt, width, height } ]  (vezi Shop::image)
+	  badge   text opțional peste prima poză („Nou”, „-24%”)
+#}
+<div class="pdp-gallery" x-data="productGallery" role="region" aria-roledescription="{{ __('galerie', 'barbarosi') }}" aria-label="{{ __('Poze produs', 'barbarosi') }}">
+	<ul class="pdp-gallery__track" x-ref="track" @scroll.debounce.60ms="update()" role="list" tabindex="0">
+		{% for image in images %}
+			<li class="pdp-gallery__slide">
+				{% include 'partial/image.twig' with {
+					image: image,
+					class: 'pdp-gallery__img',
+					sizes: '(min-width: 1024px) 45vw, 100vw',
+					loading: loop.first ? 'eager' : 'lazy',
+					fetchpriority: loop.first ? 'high' : ''
+				} only %}
+			</li>
+		{% endfor %}
+	</ul>
+
+	{% if badge %}
+		<span class="pdp-gallery__badge">{{ badge|e }}</span>
+	{% endif %}
+
+	{% if images|length > 1 %}
+		<div class="pdp-gallery__nav" x-cloak>
+			<button type="button" class="pdp-gallery__arrow" @click="prev()" :disabled="index === 0" aria-label="{{ __('Poza anterioară', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'arrow-left' } only %}
+			</button>
+
+			<ol class="pdp-gallery__progress" aria-hidden="true">
+				{% for image in images %}
+					<li :class="{ 'is-active': index === {{ loop.index0 }} }"></li>
+				{% endfor %}
+			</ol>
+
+			<button type="button" class="pdp-gallery__arrow" @click="next()" :disabled="index === count - 1" aria-label="{{ __('Poza următoare', 'barbarosi') }}">
+				{% include 'partial/icon.twig' with { name: 'arrow-right' } only %}
+			</button>
+		</div>
+	{% endif %}
+</div>

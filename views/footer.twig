@@ -20,33 +20,21 @@
 					<li><a href="{{ link.url|esc_url }}" rel="noopener">{{ link.title|e }}</a></li>
 				{% endfor %}
 			</ul>
-
-			{# TODO: selector regiune / limbă #}
-			<div class="site-footer__toggles">
-				<span class="site-footer__toggle">
-					{{ footer.region|e }}
-					{% include 'partial/icon.twig' with { name: 'pin' } only %}
-				</span>
-				<span class="site-footer__toggle site-footer__toggle--flag">
-					<span class="flag flag--ro" aria-hidden="true"></span>
-					<span class="screen-reader-text">Română</span>
-				</span>
-			</div>
 		</div>
 	</div>
 
 	<div class="site-footer__bottom">
-		<ul class="payment-icons" role="list" aria-label="{{ __('Metode de plată', 'barbarosi') }}">
-			{% for method in footer.payments %}
-				<li class="payment-icon payment-icon--{{ method }}">
-					{% include 'partial/payment-icon.twig' with { name: method } only %}
-				</li>
-			{% endfor %}
-		</ul>
+		<img
+			class="site-footer__payments"
+			src="{{ site.theme.link }}/assets/images/payment-methods.png"
+			alt="{{ __('Metode de plată acceptate', 'barbarosi') }}"
+			width="417"
+			height="73"
+			loading="lazy"
+			decoding="async"
+		>
 
 		<div class="site-footer__legal">
-			{# Obligatoriu pentru magazinele online din România (Ordinul ANPC nr. 449/2022). TODO: pictograma oficială. #}
-			<a class="anpc-badge" href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener">ANPC — Soluționarea alternativă a litigiilor</a>
 			<p class="site-footer__copyright">&copy; {{ 'now'|date('Y') }} {{ site.name|e }}</p>
 		</div>
 	</div>

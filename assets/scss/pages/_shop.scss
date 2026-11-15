@@ -1,0 +1,107 @@
+@use '../abstracts' as *;
+
+// Shop + arhivele de produse (views/archive-product.twig): aceeași secțiune, grilă și carduri ca rândul
+// de noutăți de pe prima pagină. Sortarea și paginarea sunt markup-ul WooCommerce (CSS-ul lui nu se încarcă aici).
+.shop {
+	@include product-section;
+
+	// Textul din antet e aliniat cu textul cardurilor (care au 8px padding)
+	&__header {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 16px 24px;
+		padding: 24px 8px 20px;
+
+		@include mq(md) {
+			padding-block: 40px 28px;
+		}
+	}
+
+	&__title {
+		font-size: $fs-lg;
+		font-weight: 700;
+		line-height: 1.1;
+		text-transform: uppercase;
+
+		@include mq(md) {
+			font-size: 28px;
+		}
+	}
+
+	&__count {
+		margin-top: 6px;
+		font-size: $fs-xs;
+		color: $color-muted-dark;
+		text-transform: uppercase;
+	}
+
+	&__empty {
+		padding: 48px 8px 24px;
+		font-size: $fs-sm;
+	}
+
+	// Pe fundalul gri al secțiunii notificările au fundal alb
+	.notice {
+		background: $color-white;
+	}
+
+	// Sortarea (woocommerce_catalog_ordering) — woocommerce.js trimite formularul la schimbare
+	.woocommerce-ordering select {
+		max-width: 100%;
+		padding: 4px 22px 4px 0;
+		font-size: 16px; // iOS mărește pagina la focus sub 16px
+		font-stretch: 100%; // ca restul câmpurilor (components/_form-fields.scss)
+		color: $color-text;
+		cursor: pointer;
+		background: transparent $icon-chevron no-repeat right center / 14px;
+		border: 0;
+		border-radius: 0;
+		appearance: none;
+
+		@include mq(md) {
+			font-size: 12px;
+		}
+	}
+
+	// Paginarea (woocommerce_pagination -> loop/pagination.php)
+	.woocommerce-pagination {
+		margin-top: 48px;
+
+		ul.page-numbers {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 4px;
+			padding: 0;
+			list-style: none;
+		}
+
+		li > .page-numbers {
+			display: grid;
+			place-items: center;
+			min-width: 36px;
+			height: 36px;
+			padding-inline: 8px;
+			font-size: 12px;
+			transition: background-color $duration $ease;
+		}
+
+		a.page-numbers {
+			@include hover {
+				background: $color-white;
+			}
+		}
+
+		.current {
+			font-weight: 700;
+			color: $color-white;
+			background: $color-black;
+		}
+
+		.dots {
+			color: $color-muted;
+		}
+	}
+}

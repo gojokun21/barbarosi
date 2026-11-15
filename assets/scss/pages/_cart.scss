@@ -1,0 +1,373 @@
+@use '../abstracts' as *;
+
+// Pagina „Coș” (views/cart.twig + woocommerce/cart/*.php).
+// Desktop: produsele în stânga, sumarul sticky în dreapta.
+.cart-page {
+	max-width: 1360px;
+	margin-inline: auto;
+	padding: 24px 16px 64px;
+
+	@include mq(md) {
+		padding-inline: $page-gutter;
+	}
+
+	@include mq(lg) {
+		padding: 48px 40px 96px;
+	}
+
+	&__header {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 4px 12px;
+		margin-bottom: 24px;
+
+		@include mq(lg) {
+			margin-bottom: 32px;
+		}
+	}
+
+	&__title {
+		font-size: $fs-lg;
+		font-weight: 700;
+		line-height: 1.1;
+		text-transform: uppercase;
+
+		@include mq(md) {
+			font-size: 28px;
+		}
+	}
+
+	&__count {
+		font-size: 12px;
+		color: $color-muted-dark;
+		text-transform: uppercase;
+	}
+
+	&__layout {
+		display: grid;
+		gap: 40px;
+		align-items: start;
+
+		@include mq(lg) {
+			grid-template-columns: minmax(0, 1fr) 400px;
+			gap: 48px;
+		}
+
+		@include mq(xl) {
+			grid-template-columns: minmax(0, 1fr) 440px;
+			gap: 80px;
+		}
+	}
+
+	&__summary {
+		@include mq(lg) {
+			position: sticky;
+			top: $header-height + 24px;
+
+			.admin-bar & {
+				top: $header-height + 32px + 24px;
+			}
+		}
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 16px;
+		margin-top: 24px;
+	}
+
+	// Cu JavaScript cantitatea se actualizează singură (assets/js/shop/cart.js)
+	&__update {
+		.woocommerce-js & {
+			display: none;
+		}
+	}
+
+	.woocommerce-notices-wrapper:not(:empty) {
+		margin-bottom: 24px;
+	}
+}
+
+/* Produsele din coș
+   ---------------------------------------------------------------- */
+
+.cart-lines {
+	border-top: 1px solid $color-border;
+}
+
+.cart-line {
+	display: grid;
+	grid-template-columns: 96px minmax(0, 1fr);
+	gap: 16px;
+	padding-block: 20px;
+	border-bottom: 1px solid $color-border;
+
+	@include mq(md) {
+		grid-template-columns: 128px minmax(0, 1fr);
+		gap: 24px;
+		padding-block: 24px;
+	}
+
+	&__media {
+		aspect-ratio: 5 / 6;
+		background: $color-image-bg;
+
+		a {
+			display: block;
+			height: 100%;
+		}
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 16px;
+		min-width: 0;
+	}
+
+	&__top {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 16px;
+	}
+
+	&__title {
+		font-size: 12px;
+		font-weight: 700;
+		line-height: 1.35;
+		text-transform: uppercase;
+
+		a {
+			@include hover {
+				text-decoration: underline;
+				text-underline-offset: 3px;
+			}
+		}
+	}
+
+	&__unit {
+		margin-top: 6px;
+		font-size: 11px;
+		color: $color-muted-dark;
+	}
+
+	&__note {
+		margin-top: 6px;
+		font-size: 11px;
+		color: $color-muted-dark;
+	}
+
+	&__subtotal {
+		flex-shrink: 0;
+		font-size: 12px;
+		text-align: right;
+		white-space: nowrap;
+	}
+
+	&__price-old {
+		display: block;
+		color: $color-muted;
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+	}
+
+	&__remove {
+		font-size: 11px;
+		color: $color-muted-dark;
+		text-decoration: underline;
+		text-transform: uppercase;
+		text-underline-offset: 3px;
+		transition: color $duration $ease;
+
+		@include hover {
+			color: $color-black;
+		}
+	}
+}
+
+/* Cod de reducere
+   ---------------------------------------------------------------- */
+
+.cart-coupon {
+	flex: 1 1 320px;
+	max-width: 440px;
+
+	&__label {
+		display: block;
+		margin-bottom: 8px;
+		font-size: 11px;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	&__row {
+		display: flex;
+
+		.input-text {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.btn {
+			flex-shrink: 0;
+			margin-left: -1px;
+		}
+	}
+
+	#coupon_code.has-error {
+		border-color: $color-error;
+	}
+
+	.coupon-error-notice {
+		display: block;
+		margin-top: 8px;
+		font-size: 12px;
+		color: $color-error;
+	}
+}
+
+/* Sumar: buton + garanții
+   ---------------------------------------------------------------- */
+
+.wc-proceed-to-checkout {
+	margin-top: 20px;
+
+	.btn {
+		min-height: 56px;
+	}
+}
+
+.cart-assurance {
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid $color-border-strong;
+
+	&__perks {
+		display: grid;
+		gap: 12px;
+	}
+
+	&__perk {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		font-size: 11px;
+		text-transform: uppercase;
+
+		.icon {
+			flex-shrink: 0;
+		}
+	}
+
+	&__payments {
+		margin-top: 20px;
+	}
+}
+
+/* Coș gol
+   ---------------------------------------------------------------- */
+
+.cart-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	max-width: 440px;
+	margin-inline: auto;
+	padding-block: 48px 64px;
+	text-align: center;
+
+	@include mq(lg) {
+		padding-block: 64px 96px;
+	}
+
+	&__icon {
+		width: 40px;
+		height: 40px;
+	}
+
+	&__title {
+		font-size: $fs-lg;
+		font-weight: 700;
+		text-transform: uppercase;
+
+		@include mq(md) {
+			font-size: 28px;
+		}
+	}
+
+	&__text {
+		font-size: 13px;
+		font-stretch: 100%;
+		color: $color-muted-dark;
+	}
+
+	.btn {
+		min-width: 260px;
+		margin-top: 8px;
+	}
+}
+
+/* Sugestii sub coș — rând orizontal pe mobil, 4 coloane pe desktop
+   ---------------------------------------------------------------- */
+
+.cart-suggestions {
+	margin-top: 64px;
+
+	@include mq(lg) {
+		margin-top: 96px;
+	}
+
+	&__title {
+		margin-bottom: 16px;
+		font-size: 16px;
+		font-weight: 700;
+		text-transform: uppercase;
+
+		@include mq(md) {
+			font-size: $fs-lg;
+		}
+	}
+
+	&__list {
+		display: grid;
+		grid-auto-columns: calc((100% - 7px) / 2);
+		grid-auto-flow: column;
+		gap: 7px;
+		padding-bottom: 12px;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scrollbar-color: $color-black transparent;
+		scrollbar-width: thin;
+
+		> li {
+			scroll-snap-align: start;
+		}
+
+		@include mq(lg) {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			grid-auto-flow: row;
+			padding-bottom: 0;
+			overflow: visible;
+		}
+	}
+}

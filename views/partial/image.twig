@@ -1,7 +1,7 @@
 {#
 	Imagine responsive.
 	Parametri:
-	  image          { src, srcset?, alt? }  (vezi DemoContent::image)
+	  image          { src, srcset?, alt?, width?, height? }  (vezi DemoContent::image, Shop::image)
 	  sizes          atributul sizes (implicit 100vw)
 	  class          clase CSS
 	  loading        'lazy' (implicit) | 'eager'
@@ -14,9 +14,10 @@
 		{% if class is defined and class %}class="{{ class }}"{% endif %}
 		src="{{ image.src|esc_url }}"
 		{% if image.srcset is defined and image.srcset %}srcset="{{ image.srcset|esc_attr }}" sizes="{{ sizes|default('100vw') }}"{% endif %}
+		{% if image.width is defined and image.width %}width="{{ image.width }}" height="{{ image.height }}"{% endif %}
 		alt="{{ (alt is defined ? alt : image.alt|default(''))|esc_attr }}"
 		loading="{{ loading|default('lazy') }}"
 		decoding="async"
-		{% if fetchpriority is defined %}fetchpriority="{{ fetchpriority }}"{% endif %}
+		{% if fetchpriority is defined and fetchpriority %}fetchpriority="{{ fetchpriority }}"{% endif %}
 	>
 {% endif %}

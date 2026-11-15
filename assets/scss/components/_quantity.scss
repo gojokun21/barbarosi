@@ -1,0 +1,56 @@
+@use '../abstracts' as *;
+
+// Cantitatea: [−] [ 2 ] [+]  (woocommerce/global/quantity-input.php)
+.quantity {
+	display: inline-flex;
+	align-items: stretch;
+	height: 40px;
+	border: 1px solid $color-border-strong;
+
+	.qty {
+		width: 44px;
+		min-height: 0;
+		height: 100%;
+		padding: 0;
+		font-size: 13px;
+		text-align: center;
+		background: transparent;
+		border: 0;
+		appearance: textfield;
+
+		&::-webkit-inner-spin-button,
+		&::-webkit-outer-spin-button {
+			margin: 0;
+			appearance: none;
+		}
+
+		&:focus {
+			box-shadow: none;
+		}
+
+		&:focus-visible {
+			outline: 2px solid $color-black;
+			outline-offset: -2px;
+		}
+	}
+
+	&__step {
+		display: grid;
+		place-items: center;
+		width: 36px;
+		transition: background-color $duration $ease;
+
+		.icon {
+			width: 14px;
+			height: 14px;
+		}
+
+		@include hover {
+			background: $color-surface;
+		}
+
+		&:focus-visible {
+			outline-offset: -2px;
+		}
+	}
+}

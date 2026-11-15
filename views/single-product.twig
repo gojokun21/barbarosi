@@ -1,0 +1,147 @@
+{#
+	Pagina de produs: galerie (stânga, sticky pe desktop) + informații și formular (dreapta).
+	Date: product (vezi Shop::single), notices (notificări WooCommerce).
+#}
+{% extends 'base.twig' %}
+
+{% block main %}
+	<div class="pdp">
+		<div class="pdp__gallery">
+			{% include 'partial/product-gallery.twig' with { images: product.images, badge: product.badge } only %}
+		</div>
+
+		<div class="pdp__info">
+			{% include 'partial/notices.twig' with { notices: notices } only %}
+
+			<h1 class="pdp__title">{{ product.title|e }}</h1>
+
+			<p class="pdp__price">
+				{% if product.regular_price %}
+					<s class="pdp__price-old"><span class="screen-reader-text">{{ __('Preț inițial:', 'barbarosi') }} </span>{{ product.regular_price|e }}</s>
+					<span class="screen-reader-text">{{ __('Preț redus:', 'barbarosi') }} </span>
+				{% endif %}
+				{{ product.price|e }}
+			</p>
+
+			{% if product.color %}
+				<div class="pdp__colors">
+					<p class="pdp__label">{{ __('Culoare', 'barbarosi') }}: {{ product.color.name|e }}</p>
+
+					{% if product.colors %}
+						<ul class="pdp__swatches" role="list" aria-label="{{ __('Alte culori', 'barbarosi') }}">
+							{% for color in product.colors %}
+								<li>
+									<a
+										class="swatch swatch--lg{{ color.current ? ' is-current' }}"
+										href="{{ color.url|esc_url }}"
+										style="--swatch: {{ color.hex|esc_attr }}"
+										title="{{ color.name|esc_attr }}"
+										{% if color.current %}aria-current="page"{% endif %}
+									><span class="screen-reader-text">{{ color.name|e }}</span></a>
+								</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			{#
+				Formularul standard WooCommerce (POST pe pagina produsului): funcționează și fără JS.
+				Alpine doar afișează mărimea aleasă și validează cu mesaj propriu.
+			#}
+			<form
+				class="pdp__form"
+				method="post"
+				action="{{ product.url|esc_url }}"
+				x-data="productForm"
+				@submit="submit"
+			>
+				{% if product.sizes %}
+					<fieldset class="pdp__sizes">
+						<legend class="pdp__label">
+							{{ __('Mărime', 'barbarosi') }}<span x-show="size" x-text="': ' + size" x-cloak></span>
+						</legend>
+
+						<div class="size-options">
+							{% for size in product.sizes %}
+								<label class="size-option{{ not size.in_stock ? ' is-disabled' }}">
+									<input
+										class="size-option__input"
+										type="radio"
+										name="variation_id"
+										value="{{ size.variation_id }}"
+										data-label="{{ size.label|esc_attr }}"
+										@change="select($event.target)"
+										required
+										{{ not size.in_stock ? 'disabled' }}
+										{{ product.sizes|length == 1 and size.in_stock ? 'checked' }}
+									>
+									<span class="size-option__box">
+										{{ size.label|e }}
+										{% if not size.in_stock %}<span class="screen-reader-text">— {{ __('stoc epuizat', 'barbarosi') }}</span>{% endif %}
+									</span>
+								</label>
+							{% endfor %}
+						</div>
+
+						<p class="pdp__error" x-show="error" x-cloak role="alert">{{ __('Alege o mărime.', 'barbarosi') }}</p>
+					</fieldset>
+				{% endif %}
+
+				{% if product.short_description %}
+					<div class="pdp__note">{{ product.short_description }}</div>
+				{% endif %}
+
+				<input type="hidden" name="add-to-cart" value="{{ product.id }}">
+				<input type="hidden" name="quantity" value="1">
+				<input type="hidden" name="barbarosi_pdp" value="1">
+
+				<div class="pdp__actions">
+					{% if product.purchasable %}
+						<button class="btn btn--primary btn--block" type="submit" :disabled="busy">{{ __('Adaugă în coș', 'barbarosi') }}</button>
+					{% else %}
+						<button class="btn btn--primary btn--block" type="button" disabled>{{ __('Stoc epuizat', 'barbarosi') }}</button>
+					{% endif %}
+
+					{% if product.size_guide %}
+						<button class="btn btn--outline btn--block" type="button" x-cloak @click="$dispatch('size-guide:open')" aria-haspopup="dialog">
+							{{ __('Ghid de mărimi', 'barbarosi') }}
+						</button>
+					{% endif %}
+				</div>
+			</form>
+
+			{% if product.description %}
+				<div class="pdp__description">{{ product.description }}</div>
+			{% endif %}
+
+			{% if product.perks %}
+				<ul class="pdp__perks" role="list">
+					{% for perk in product.perks %}
+						<li class="pdp__perk">
+							{% include 'partial/icon.twig' with { name: perk.icon } only %}
+							<span>{{ perk.text|e }}</span>
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+
+			{% if product.combine %}
+				<section class="pdp__combine" aria-labelledby="combine-title">
+					<h2 class="pdp__subtitle" id="combine-title">{{ __('Combină cu', 'barbarosi') }}</h2>
+					<ul class="pdp__combine-list" role="list">
+						{% for item in product.combine %}
+							<li>
+								{% include 'partial/product-card.twig' with { product: item, sizes: '(min-width: 1024px) 18vw, 50vw' } only %}
+							</li>
+						{% endfor %}
+					</ul>
+				</section>
+			{% endif %}
+		</div>
+	</div>
+
+	{% if product.size_guide %}
+		{% include 'partial/size-guide.twig' with { guide: product.size_guide } only %}
+	{% endif %}
+{% endblock %}

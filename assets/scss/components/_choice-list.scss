@@ -1,0 +1,95 @@
+@use '../abstracts' as *;
+
+// Opțiuni cu radio, ca un grup de carduri: metodele de livrare și de plată din checkout.
+// Structura vine de la WooCommerce: <li> <input type="radio"> <label> [<div class="payment_box">] </li>
+// (o singură metodă = fără radio: input hidden la livrare, ascuns din JS la plată)
+.choice-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 1px solid $color-border-strong;
+
+	> li {
+		position: relative;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+		padding: 16px;
+		transition: background-color $duration $ease;
+
+		& + li {
+			border-top: 1px solid $color-border-strong;
+		}
+
+		> label {
+			display: flex;
+			flex: 1;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 4px 12px;
+			min-width: 0;
+			font-size: 13px;
+			font-stretch: 100%;
+			cursor: pointer;
+
+			img {
+				display: inline-block;
+				max-height: 24px;
+				width: auto;
+			}
+		}
+	}
+
+	// Opțiunea aleasă
+	> li:has(> input[type='radio']:checked) {
+		background: #fafafa;
+		box-shadow: inset 0 0 0 1px $color-black;
+	}
+
+	// Descrierea / câmpurile metodei de plată
+	.payment_box {
+		flex-basis: 100%;
+		font-size: 12px;
+		font-stretch: 100%;
+		line-height: 1.5;
+		color: $color-muted-dark;
+
+		> * + * {
+			margin-top: 8px;
+		}
+
+		fieldset {
+			padding: 0;
+			border: 0;
+		}
+	}
+
+	// Aliniată cu textul etichetei, cât timp radio-ul e vizibil (checkout.js îl ascunde când e o singură metodă)
+	> li > input[type='radio']:not([style*='none']) ~ .payment_box {
+		padding-left: 30px;
+	}
+
+	&__empty {
+		.woocommerce-info {
+			margin: 0;
+		}
+	}
+}
+
+// Titlul opțiunii: <span class="choice__title"> la livrare, eticheta întreagă la plată (vine din gateway)
+.choice__title,
+.wc_payment_method > label {
+	font-size: 12px;
+	font-weight: 700;
+	font-stretch: $font-stretch;
+	text-transform: uppercase;
+}
+
+.choice {
+
+	&__aside {
+		white-space: nowrap;
+	}
+}

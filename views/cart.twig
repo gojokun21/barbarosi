@@ -1,0 +1,11 @@
+{#
+	Pagina „Coș”. Conținutul vine din shortcode-ul WooCommerce, cu template-urile suprascrise
+	în woocommerce/cart/ (vezi src/Checkout.php) — aici e doar cadrul paginii.
+#}
+{% extends 'base.twig' %}
+
+{% block main %}
+	<div class="cart-page">
+		{{ function('do_shortcode', '[woocommerce_cart]') }}
+	</div>
+{% endblock %}

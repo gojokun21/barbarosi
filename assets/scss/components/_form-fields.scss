@@ -1,0 +1,188 @@
+@use '../abstracts' as *;
+
+// Câmpurile generate de WooCommerce (woocommerce_form_field): checkout, contul meu, cod de reducere.
+// <p class="form-row form-row-first validate-required" id="billing_first_name_field">
+//   <label for="billing_first_name">Prenume <abbr class="required">*</abbr></label>
+//   <span class="woocommerce-input-wrapper"><input class="input-text" ...></span>
+// </p>
+
+$field-height: 48px;
+
+.form-row {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+
+	> label:not(.checkbox) {
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 1.3;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	// WooCommerce pune asteriscul în <abbr> (server) sau <span> (address-i18n.js)
+	.required {
+		color: $color-muted-dark;
+		text-decoration: none;
+		border: 0;
+	}
+
+	.optional {
+		font-weight: 400;
+		color: $color-muted;
+		text-transform: none;
+	}
+
+	// Țara, când magazinul livrează într-o singură țară (text în loc de select)
+	.woocommerce-input-wrapper > strong {
+		display: flex;
+		align-items: center;
+		min-height: $field-height;
+		font-size: 14px;
+		font-weight: 400;
+	}
+
+	.description {
+		font-size: 11px;
+		color: $color-muted-dark;
+	}
+}
+
+.woocommerce-input-wrapper {
+	display: block;
+}
+
+// iOS mărește pagina la focus pe câmpurile sub 16px — pe mobil păstrăm 16px.
+.input-text,
+.form-row select,
+.form-row textarea {
+	width: 100%;
+	min-height: $field-height;
+	padding: 12px 14px;
+	font-size: 16px;
+	font-stretch: 100%;
+	line-height: 1.4;
+	color: $color-text;
+	background: $color-white;
+	border: 1px solid $color-border-strong;
+	border-radius: 0;
+	box-shadow: none;
+	transition:
+		border-color $duration $ease,
+		box-shadow $duration $ease;
+
+	@include mq(md) {
+		font-size: 14px;
+	}
+
+	&::placeholder {
+		color: $color-muted;
+		opacity: 1;
+	}
+
+	&:focus {
+		border-color: $color-black;
+		outline: none;
+		box-shadow: inset 0 0 0 1px $color-black;
+	}
+
+	&:disabled,
+	&[readonly] {
+		color: $color-muted-dark;
+		background: $color-surface;
+	}
+}
+
+.form-row select {
+	padding-right: 40px;
+	cursor: pointer;
+	background: $color-white $icon-chevron no-repeat right 14px center / 14px;
+	appearance: none;
+}
+
+.form-row textarea {
+	min-height: 96px;
+	resize: vertical;
+}
+
+/* Validare (checkout.js adaugă clasele pe .form-row)
+   ---------------------------------------------------------------- */
+
+.form-row.woocommerce-invalid {
+	.input-text,
+	select {
+		border-color: $color-error;
+	}
+
+	.input-text:focus,
+	select:focus {
+		box-shadow: inset 0 0 0 1px $color-error;
+	}
+}
+
+.checkout-inline-error-message {
+	font-size: 12px;
+	color: $color-error;
+}
+
+/* Checkbox și radio (input-ul nativ, redesenat — funcționează cu markup-ul WooCommerce așa cum e)
+   ---------------------------------------------------------------- */
+
+.woocommerce-form__label-for-checkbox.checkbox {
+	align-items: flex-start;
+	font-size: 13px;
+	font-stretch: 100%;
+	line-height: 1.4;
+	text-transform: none;
+
+	a {
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+}
+
+.input-checkbox,
+.woocommerce-form__input-checkbox,
+.input-radio,
+.choice-list input[type='radio'] {
+	display: inline-grid;
+	flex-shrink: 0;
+	place-content: center;
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	cursor: pointer;
+	background: $color-white;
+	border: 1px solid $color-black;
+	appearance: none;
+
+	&::before {
+		content: '';
+		width: 10px;
+		height: 10px;
+		background: $color-black;
+		transform: scale(0);
+		transition: transform 0.15s $ease;
+	}
+
+	&:checked::before {
+		transform: scale(1);
+	}
+
+	&:focus-visible {
+		outline: 2px solid $color-black;
+		outline-offset: 2px;
+	}
+}
+
+.input-radio,
+.choice-list input[type='radio'] {
+	border-radius: 50%;
+
+	&::before {
+		border-radius: 50%;
+	}
+}

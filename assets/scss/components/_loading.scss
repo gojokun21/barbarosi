@@ -1,0 +1,29 @@
+@use '../abstracts' as *;
+
+// Overlay-ul pus de WooCommerce (jQuery blockUI) peste coș / sumar / plată în timpul cererilor AJAX.
+// Fundalul alb semi-transparent vine inline din WooCommerce; adăugăm doar indicatorul.
+.blockUI.blockOverlay::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 22px;
+	height: 22px;
+	margin: -11px 0 0 -11px;
+	border: 2px solid $color-black;
+	border-right-color: transparent;
+	border-radius: 50%;
+	animation: loading-spin 0.7s linear infinite;
+}
+
+@keyframes loading-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.blockUI.blockOverlay::before {
+		animation-duration: 2s;
+	}
+}

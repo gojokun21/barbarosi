@@ -1,0 +1,181 @@
+@use '../abstracts' as *;
+
+// Pagina de rezultate (views/search.twig). Are și clasa `shop`: secțiunea gri, sortarea, paginarea și
+// notificările vin din pages/_shop.scss. Textele sunt aliniate cu textul cardurilor (8px padding).
+.search-page {
+	&__header {
+		padding: 24px 8px 20px;
+
+		@include mq(md) {
+			padding-block: 40px 28px;
+		}
+	}
+
+	&__eyebrow {
+		margin-bottom: 4px;
+		font-size: $fs-xs;
+		font-weight: 400;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: $color-muted-dark;
+	}
+
+	// Câmp mare, doar cu linie dedesubt; la focus linia se îngroașă
+	&__form {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		border-bottom: 1px solid $color-black;
+		transition: box-shadow $duration $ease;
+
+		&:focus-within {
+			box-shadow: 0 1px 0 $color-black;
+		}
+	}
+
+	&__input {
+		flex: 1;
+		min-width: 0;
+		height: 56px;
+		padding: 0;
+		font-size: 22px;
+		font-weight: 700;
+		line-height: 1;
+		letter-spacing: 0.01em;
+		text-transform: uppercase;
+		color: $color-text;
+		background: transparent;
+		border: 0;
+		border-radius: 0;
+		outline: none; // conturul e linia de sub formular (:focus-within)
+		appearance: none;
+
+		@include mq(md) {
+			height: 80px;
+			font-size: 40px;
+		}
+
+		&::placeholder {
+			color: $color-muted;
+			opacity: 1;
+		}
+
+		&::-webkit-search-cancel-button,
+		&::-webkit-search-decoration {
+			appearance: none;
+		}
+	}
+
+	&__submit {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+
+		.icon {
+			width: 24px;
+			height: 24px;
+
+			@include mq(md) {
+				width: 30px;
+				height: 30px;
+			}
+		}
+	}
+
+	&__toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px 24px;
+		margin-top: 20px;
+	}
+
+	&__count {
+		font-size: $fs-xs;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: $color-muted-dark;
+
+		strong {
+			font-weight: 700;
+			color: $color-black;
+		}
+	}
+
+	&__facets {
+		padding: 0 8px 24px;
+	}
+
+	&__recommended {
+		margin-top: 56px;
+	}
+
+	&__subtitle {
+		padding: 0 8px 20px;
+		font-size: $fs-lg;
+		font-weight: 700;
+		line-height: 1.1;
+		text-transform: uppercase;
+	}
+}
+
+// Fără termen sau fără rezultate
+.search-empty {
+	padding: 24px 8px 8px;
+
+	&__title {
+		font-size: $fs-lg;
+		font-weight: 700;
+		line-height: 1.2;
+		text-transform: uppercase;
+		overflow-wrap: anywhere;
+
+		@include mq(md) {
+			font-size: 24px;
+		}
+	}
+
+	&__text,
+	&__tips {
+		margin-top: 12px;
+		font-size: 12px;
+		color: $color-muted-dark;
+	}
+
+	&__tips {
+		display: grid;
+		gap: 8px;
+		margin-top: 16px;
+
+		li {
+			position: relative;
+			padding-left: 16px;
+
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0.75em;
+				left: 0;
+				width: 7px;
+				height: 1px;
+				background: currentColor;
+			}
+		}
+	}
+
+	&__popular {
+		margin-top: 32px;
+	}
+
+	&__subtitle {
+		margin-bottom: 12px;
+		font-size: $fs-xs;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+}

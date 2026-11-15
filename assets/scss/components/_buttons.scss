@@ -1,0 +1,55 @@
+@use '../abstracts' as *;
+
+// <button class="btn btn--primary btn--block">
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 48px;
+	padding: 12px 24px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: 0.02em;
+	text-align: center;
+	text-transform: uppercase;
+	border: 1px solid $color-black;
+	transition:
+		background-color $duration $ease,
+		border-color $duration $ease,
+		color $duration $ease;
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	&--primary {
+		color: $color-white;
+		background: $color-black;
+
+		@include hover {
+			&:not(:disabled) {
+				background: #333;
+				border-color: #333;
+			}
+		}
+	}
+
+	&--outline {
+		color: $color-black;
+		background: transparent;
+
+		@include hover {
+			&:not(:disabled) {
+				color: $color-white;
+				background: $color-black;
+			}
+		}
+	}
+
+	&--block {
+		width: 100%;
+	}
+}

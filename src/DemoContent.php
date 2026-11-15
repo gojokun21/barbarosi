@@ -11,7 +11,7 @@
  * Forma unei imagini: [ 'src' => string, 'srcset' => string, 'alt' => string ]
  */
 final class DemoContent {
-	private const CDN_FILES = 'https://dailypaperclothing.com/cdn/shop/files/';
+	public const CDN_FILES  = 'https://dailypaperclothing.com/cdn/shop/files/';
 	private const CDN_VIDEO = 'https://dailypaperclothing.com/cdn/shop/videos/c/vp/';
 
 	private const SRCSET_WIDTHS = [ 320, 480, 640, 800, 1000, 1200, 1600, 2000 ];
@@ -81,6 +81,7 @@ final class DemoContent {
 			'membership'    => [ 'title' => 'Membership', 'url' => '#' ],
 			'account_url'   => self::account_url(),
 			'cart_url'      => self::cart_url(),
+			'cart_count'    => class_exists( 'Shop' ) ? Shop::cart_count() : 0,
 			'nav'           => [
 				[
 					'key'   => 'new',
@@ -163,7 +164,21 @@ final class DemoContent {
 				],
 			],
 			'nav_secondary' => self::links( [ 'FAQ', 'Magazine', 'Cariere', 'Livrare', 'Retururi', 'Plăți' ], '#' ),
+			// Panoul de căutare (partial/header-search.twig)
+			'search'        => [
+				'popular' => class_exists( 'Search' ) ? Search::popular() : [],
+			],
 		];
+	}
+
+	/**
+	 * Căutările sugerate în panoul de căutare și pe pagina de rezultate (fără termen / fără rezultate).
+	 * TODO producție: dintr-o opțiune editabilă în admin sau din cei mai căutați termeni.
+	 *
+	 * @return string[]
+	 */
+	public static function popular_searches(): array {
+		return [ 'Geacă puffer', 'Hanorac', 'Monogram', 'Blugi', 'Cămașă', 'Căciulă' ];
 	}
 
 	/* ---------------------------------------------------------------------
@@ -199,8 +214,32 @@ final class DemoContent {
 				],
 			],
 			'social'   => self::links( [ 'X', 'Facebook', 'Instagram', 'TikTok' ], '#' ),
-			'region'   => 'România',
-			'payments' => [ 'visa', 'mastercard', 'maestro', 'applepay', 'googlepay' ],
+		];
+	}
+
+	/**
+	 * Logo-urile din partial/payment-icon.twig (sumarul coșului; footer-ul folosește assets/images/payment-methods.png).
+	 *
+	 * @return string[]
+	 */
+	public static function payment_methods(): array {
+		return [ 'visa', 'mastercard', 'maestro', 'applepay', 'googlepay' ];
+	}
+
+	/**
+	 * Link-urile din footer-ul simplificat al checkout-ului: paginile setate în WordPress / WooCommerce,
+	 * altfel `#` până există paginile.
+	 *
+	 * @return array<int, array{title: string, url: string}>
+	 */
+	public static function legal_links(): array {
+		$terms_id = function_exists( 'wc_terms_and_conditions_page_id' ) ? wc_terms_and_conditions_page_id() : 0;
+
+		return [
+			[ 'title' => 'Termeni și condiții', 'url' => $terms_id ? (string) get_permalink( $terms_id ) : '#' ],
+			[ 'title' => 'Politica de confidențialitate', 'url' => get_privacy_policy_url() ?: '#' ],
+			[ 'title' => 'Livrare', 'url' => '#' ],
+			[ 'title' => 'Retur', 'url' => '#' ],
 		];
 	}
 
@@ -223,34 +262,14 @@ final class DemoContent {
 			],
 
 			'new_arrivals'    => [
-				'products' => [
-					self::product(
-						'Geacă puffer Dias cu mâneci raglan — verde',
-						'1.599 lei',
-						'P260818123721_Fullbody_Jpg_High_res_5.jpg',
-						'RAGLAN_SLEEVE_DIAS_PUFFER_JACKET_GRASSWHOPER_Front.jpg',
-						[ [ 'name' => 'Verde', 'hex' => '#73a073' ], [ 'name' => 'Negru', 'hex' => '#504949' ] ]
-					),
-					self::product(
-						'Hanorac boxy cu fermoar Stay Informed — negru',
-						'849 lei',
-						'P260818120630_Top_Jpg_High_res_4.jpg',
-						'VINTAGE_STAY_INFORMED_BOXY_HOODIE_BLACK_Front.jpg'
-					),
-					self::product(
-						'Bluză raglan cu contrast — portocaliu',
-						'429 lei',
-						'P260818112513_Top_Jpg_High_res_3.jpg',
-						'CONTRAST_RAGLAN_LS_T-SHIRT_GOLDEN_ORANGE_Front.jpg',
-						[ [ 'name' => 'Portocaliu', 'hex' => '#f0a830' ], [ 'name' => 'Verde', 'hex' => '#3f5b41' ] ]
-					),
-					self::product(
-						'Tricou vintage Stay Informed — gri deschis',
-						'299 lei',
-						'P260818102746_Top_Jpg_High_res_12.jpg',
-						'VINTAGE_STAY_INFORMED_T-SHIRT_LIGHT_GREY_Front.jpg'
-					),
-				],
+				'products' => self::products(
+					[
+						'geaca-puffer-dias-raglan-verde',
+						'hanorac-boxy-stay-informed-negru',
+						'bluza-raglan-contrast-portocaliu',
+						'tricou-vintage-stay-informed-gri-deschis',
+					]
+				),
 			],
 
 			'split_banners'   => [
@@ -283,27 +302,15 @@ final class DemoContent {
 				'items' => [
 					[
 						'image'    => self::image( 'DSCF6404-2.jpg', 'Ținută cu cămașă și blugi denim croc jacquard', 1000 ),
-						'products' => [
-							self::product( 'Cămașă denim croc jacquard — albastru', '899 lei', 'FW26_-_CROC_JACQUARD_OVERSIZED_JEANS_Mid_BlueP2606101637171-12.jpg', 'FW26_-_CROC_JACQUARD_DENIM_SHIRT_Mid_Blue_Front_d84246b3-063e-4662-8eaa-bad53b32466e.jpg' ),
-							self::product( 'Tricou Origami Shield — alb', '329 lei', 'White_Origami_Shield_T-Shirt.jpg', 'ORIGAMI_SHIELD_T-SHIRT_WHITE_BACK.jpg' ),
-							self::product( 'Blugi oversized croc jacquard — albastru', '799 lei', 'FW26_-_CROC_JACQUARD_OVERSIZED_JEANS_Mid_BlueP260610163717_Fullbody_Jpg_High_res_13.jpg', 'FW26_-_CROC_JACQUARD_OVERSIZED_JEANS_Mid_Blue_Front_e6f1c52d-03a4-4f4b-91bd-5dadfb0a3e80.jpg' ),
-						],
+						'products' => self::products( [ 'camasa-denim-croc-jacquard-albastru', 'tricou-origami-shield-alb', 'blugi-oversized-croc-jacquard-albastru' ] ),
 					],
 					[
 						'image'    => self::image( 'DSCF6089-2_6c2753c6-489a-4937-af04-bb5e031f30d8.jpg', 'Ținută cu pulover tricotat Shield', 1000 ),
-						'products' => [
-							self::product( 'Căciulă chapka Monogram — maro', '649 lei', 'FW26_-_MONOGRAM_CHAPKA_MADDER_BROWNP260610122202.jpg', 'FW26_-_MONOGRAM_CHAPKA_MADDER_BROWN__Front_2.jpg', [ [ 'name' => 'Maro', 'hex' => '#6b4a3a' ], [ 'name' => 'Vișiniu', 'hex' => '#7a1010' ] ] ),
-							self::product( 'Pulover tricotat Shield cu fermoar — negru', '899 lei', 'FW26_-_SHIELD_KNIT_ZIP_UP_BLACK-BROWN_DETAILP2606101222021.jpg', 'FW26_-_SHIELD_KNIT_ZIP_UP_BLACK-BROWN_FRONT_14012695-f153-4f9e-9014-21b14bc272b6.jpg' ),
-							self::product( 'Pantaloni cargo washed — verde army', '799 lei', 'FW26_-_WASHED_TWO_POCKET_CARGO_PANTS_GreenP260610102908.jpg', 'FW26_-_WASHED_TWO_POCKET_CARGO_PANTS_Green_Front_feaceee1-f7d6-40d4-8efd-a1dc28bfc6c6.jpg' ),
-						],
+						'products' => self::products( [ 'caciula-chapka-monogram-maro', 'pulover-tricotat-shield-fermoar-negru', 'pantaloni-cargo-washed-verde-army' ] ),
 					],
 					[
 						'image'    => self::image( 'DSCF6438-2.jpg', 'Ținută cu geacă puffer Ayan Monogram', 1000 ),
-						'products' => [
-							self::product( 'Geacă puffer Ayan Monogram — verde army', '1.699 lei', 'FW26_-_AYAN_MONOGRAM_JACKET_Stone_GrayP260610101621.jpg' ),
-							self::product( 'Cămașă cu dungi texturate — bleu', '749 lei', 'FW26_-_TEXTURED_STRIPE_LS_SHIRT_LIGHT_BLUEP2606101232331.jpg' ),
-							self::product( 'Pantaloni cargo washed — verde army', '799 lei', 'FW26_-_WASHED_TWO_POCKET_CARGO_PANTS_GreenP260610102908.jpg', 'FW26_-_WASHED_TWO_POCKET_CARGO_PANTS_Green_Front_feaceee1-f7d6-40d4-8efd-a1dc28bfc6c6.jpg' ),
-						],
+						'products' => self::products( [ 'geaca-puffer-ayan-monogram-verde-army', 'camasa-dungi-texturate-bleu', 'pantaloni-cargo-washed-verde-army' ] ),
 					],
 				],
 			],
@@ -352,23 +359,141 @@ final class DemoContent {
 	}
 
 	/* ---------------------------------------------------------------------
-	 * Helpers pentru structuri repetitive
+	 * Pagina de produs
 	 * ------------------------------------------------------------------- */
 
 	/**
-	 * @param array<int, array{name: string, hex: string}> $colors Prima culoare = varianta curentă.
+	 * Avantajele de sub descriere (livrare, retur, plată).
+	 *
+	 * @return array<int, array{icon: string, text: string}>
 	 */
-	private static function product( string $title, string $price, string $image, ?string $hover_image = null, array $colors = [] ): array {
+	public static function product_perks(): array {
 		return [
-			'title'       => $title,
-			'price'       => $price,
-			'url'         => self::shop_url(),
-			'badge'       => 'Nou',
-			'image'       => self::image( $image, $title, 800 ),
-			'hover_image' => $hover_image ? self::image( $hover_image, $title, 800 ) : null,
-			'colors'      => $colors,
+			[
+				'icon' => 'truck',
+				/* translators: %s: suma minimă pentru livrare gratuită */
+				'text' => sprintf( __( 'Livrare gratuită la comenzile de peste %s', 'barbarosi' ), self::price( 500 ) ),
+			],
+			[
+				'icon' => 'box',
+				'text' => __( 'Retur gratuit în 30 de zile', 'barbarosi' ),
+			],
+			[
+				'icon' => 'card',
+				'text' => __( 'Plată securizată cu cardul, Apple Pay sau Google Pay', 'barbarosi' ),
+			],
 		];
 	}
+
+	/**
+	 * Tabelul de mărimi după tipul produsului (meta `_barbarosi_size_guide`: tops | bottoms).
+	 *
+	 * @return array{title: string, columns: string[], rows: array<int, array<int, string|int>>, note: string}|null
+	 */
+	public static function size_guide( string $type ): ?array {
+		$note = __( 'Măsurătorile sunt în centimetri, luate pe produsul așezat întins. Pot varia cu ±1–2 cm.', 'barbarosi' );
+
+		$guides = [
+			'tops'    => [
+				'title'   => __( 'Ghid de mărimi — topuri', 'barbarosi' ),
+				'columns' => [ __( 'Mărime', 'barbarosi' ), __( 'Piept', 'barbarosi' ), __( 'Lungime', 'barbarosi' ), __( 'Mânecă', 'barbarosi' ) ],
+				'rows'    => [
+					[ 'XS', 104, 68, 60 ],
+					[ 'S', 108, 70, 61 ],
+					[ 'M', 112, 72, 62 ],
+					[ 'L', 116, 74, 63 ],
+					[ 'XL', 120, 76, 64 ],
+					[ 'XXL', 124, 78, 65 ],
+				],
+				'note'    => $note,
+			],
+			'bottoms' => [
+				'title'   => __( 'Ghid de mărimi — pantaloni', 'barbarosi' ),
+				'columns' => [ __( 'Mărime', 'barbarosi' ), __( 'Talie', 'barbarosi' ), __( 'Șold', 'barbarosi' ), __( 'Lungime', 'barbarosi' ) ],
+				'rows'    => [
+					[ 'XS', 72, 100, 102 ],
+					[ 'S', 76, 104, 103 ],
+					[ 'M', 80, 108, 104 ],
+					[ 'L', 84, 112, 105 ],
+					[ 'XL', 88, 116, 106 ],
+					[ 'XXL', 92, 120, 107 ],
+				],
+				'note'    => $note,
+			],
+		];
+
+		return $guides[ $type ] ?? null;
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Produse demo (catalogul din src/demo/products.php)
+	 * ------------------------------------------------------------------- */
+
+	/**
+	 * Catalogul demo — sursa pentru `wp barbarosi seed` și pentru cardurile de mai jos.
+	 */
+	public static function catalog(): array {
+		static $catalog = null;
+
+		return $catalog ??= require __DIR__ . '/demo/products.php';
+	}
+
+	/**
+	 * Carduri de produs după cheile din catalog.
+	 *
+	 * @param string[] $keys
+	 */
+	private static function products( array $keys ): array {
+		return array_values( array_filter( array_map( [ self::class, 'product' ], $keys ) ) );
+	}
+
+	/**
+	 * Produsul din WooCommerce (după seed); până atunci, un card static din catalog cu link spre shop.
+	 */
+	private static function product( string $key ): ?array {
+		$card = class_exists( 'Shop' ) ? Shop::card_by_slug( $key ) : null;
+
+		if ( $card ) {
+			return $card;
+		}
+
+		$catalog    = self::catalog();
+		$definition = $catalog['products'][ $key ] ?? null;
+
+		if ( ! $definition ) {
+			return null;
+		}
+
+		// Culoarea curentă prima, apoi celelalte culori din același grup.
+		$colors = [ [ 'name' => $catalog['colors'][ $definition['color'] ], 'hex' => $definition['hex'] ] ];
+
+		foreach ( $catalog['products'] as $other_key => $other ) {
+			if ( $other_key !== $key && ! empty( $definition['group'] ) && ( $other['group'] ?? '' ) === $definition['group'] ) {
+				$colors[] = [ 'name' => $catalog['colors'][ $other['color'] ], 'hex' => $other['hex'] ];
+			}
+		}
+
+		$on_sale = isset( $definition['sale_price'] );
+
+		return [
+			'title'         => $definition['name'],
+			'price'         => self::price( $definition['sale_price'] ?? $definition['price'] ),
+			'regular_price' => $on_sale ? self::price( $definition['price'] ) : null,
+			'url'           => self::shop_url(),
+			'badge'         => empty( $definition['new'] ) ? null : 'Nou',
+			'image'         => self::image( $definition['images'][0], $definition['name'], 800 ),
+			'hover_image'   => isset( $definition['images'][1] ) ? self::image( $definition['images'][1], $definition['name'], 800 ) : null,
+			'colors'        => $colors,
+		];
+	}
+
+	private static function price( float $amount ): string {
+		return function_exists( 'wc_price' ) ? Shop::price_text( $amount ) : number_format( $amount, 0, ',', '.' ) . ' lei';
+	}
+
+	/* ---------------------------------------------------------------------
+	 * Helpers pentru structuri repetitive
+	 * ------------------------------------------------------------------- */
 
 	private static function category_item( string $file, string $title ): array {
 		return [

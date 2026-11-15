@@ -78,6 +78,39 @@
 		}
 	}
 
+	&__cart {
+		position: relative;
+	}
+
+	// Numărul de produse din coș
+	&__count {
+		position: absolute;
+		top: 2px;
+		right: 0;
+		min-width: 15px;
+		height: 15px;
+		padding-inline: 3px;
+		font-size: 9px;
+		font-weight: 700;
+		line-height: 15px;
+		text-align: center;
+		color: $color-white;
+		background: $color-black;
+		border-radius: 8px;
+		transition:
+			color $duration $ease,
+			background-color $duration $ease;
+
+		@include mq(lg) {
+			right: -6px;
+		}
+
+		.is-transparent & {
+			color: $color-black;
+			background: $color-white;
+		}
+	}
+
 	&__account {
 		display: none;
 
@@ -173,82 +206,5 @@
 	// Logo monocrom negru -> alb peste hero
 	.is-transparent &__img {
 		filter: brightness(0) invert(1);
-	}
-}
-
-/* Căutare + membership
-   ---------------------------------------------------------------- */
-
-.header-search {
-	position: relative;
-	display: none;
-	align-items: center;
-	width: 268px;
-	height: 40px;
-	border: 1px solid #d4d4d4;
-	transition: border-color $duration $ease;
-
-	@include mq(lg) {
-		display: flex;
-	}
-
-	.is-transparent & {
-		border-color: rgba($color-white, 0.6);
-	}
-
-	&:focus-within {
-		border-color: currentColor;
-	}
-
-	&__input {
-		flex: 1;
-		min-width: 0;
-		height: 100%;
-		padding: 0 40px 0 12px;
-		font-size: $fs-xs;
-		color: inherit;
-		background: transparent;
-		border: 0;
-		outline: none;
-		appearance: none;
-
-		&::placeholder {
-			color: inherit;
-			opacity: 0.85;
-		}
-
-		&::-webkit-search-cancel-button {
-			appearance: none;
-		}
-	}
-
-	&__submit {
-		position: absolute;
-		right: 10px;
-		display: inline-flex;
-	}
-}
-
-.header-membership {
-	display: none;
-	align-items: center;
-	height: 40px;
-	padding: 0 22px;
-	font-size: $fs-xs;
-	letter-spacing: 0.02em;
-	text-transform: uppercase;
-	border: 1px solid currentColor;
-	transition:
-		background-color $duration $ease,
-		color $duration $ease;
-
-	@include mq(lg) {
-		display: inline-flex;
-	}
-
-	@include hover {
-		color: $color-white;
-		background: $color-black;
-		border-color: $color-black;
 	}
 }

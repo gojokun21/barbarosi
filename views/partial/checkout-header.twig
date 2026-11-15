@@ -1,0 +1,19 @@
+{#
+	Header simplificat pentru checkout: înapoi la coș, logo, plată securizată.
+	Fără meniu și căutare — clientul rămâne concentrat pe finalizarea comenzii.
+#}
+<header class="checkout-header">
+	<div class="checkout-header__bar">
+		<a class="checkout-header__back" href="{{ header.cart_url|esc_url }}">
+			{% include 'partial/icon.twig' with { name: 'arrow-left' } only %}
+			<span class="checkout-header__label">{{ __('Înapoi la coș', 'barbarosi') }}</span>
+		</a>
+
+		{% include 'partial/site-logo.twig' %}
+
+		<p class="checkout-header__secure">
+			{% include 'partial/icon.twig' with { name: 'lock' } only %}
+			<span class="checkout-header__label">{{ __('Plată securizată', 'barbarosi') }}</span>
+		</p>
+	</div>
+</header>

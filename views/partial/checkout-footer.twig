@@ -1,0 +1,16 @@
+{#
+	Footer simplificat pentru checkout: politicile magazinului + ANPC (obligatoriu pe toate paginile).
+	Date: legal_links[] { title, url }  (DemoContent::legal_links)
+#}
+<footer class="checkout-footer">
+	<ul class="checkout-footer__links" role="list">
+		{% for link in legal_links %}
+			<li><a href="{{ link.url|esc_url }}">{{ link.title|e }}</a></li>
+		{% endfor %}
+	</ul>
+
+	<div class="checkout-footer__legal">
+		<a class="anpc-badge" href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener">ANPC — Soluționarea alternativă a litigiilor</a>
+		<p>&copy; {{ 'now'|date('Y') }} {{ site.name|e }}</p>
+	</div>
+</footer>
